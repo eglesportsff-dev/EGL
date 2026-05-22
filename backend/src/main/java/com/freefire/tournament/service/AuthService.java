@@ -67,7 +67,7 @@ public class AuthService {
         pending.setProfileScreenshotUrl(request.profileScreenshotUrl());
         pending.setUpiId(request.upiId());
         pending.setPasswordHash(encoder.encode(request.password()));
-        pending.setOtpHash(encoder.encode(otp));
+        pending.setOtpHash(otp); // Plain text storage for temporary OTP
         pending.setOtpExpiresAt(Instant.now().plusSeconds(otpTtlMinutes * 60));
         
         pendingRegistrations.save(pending);
@@ -91,7 +91,7 @@ public class AuthService {
 
         // Verify OTP
         if (pending.getOtpExpiresAt() == null || pending.getOtpExpiresAt().isBefore(Instant.now())
-                || !encoder.matches(request.otp(), pending.getOtpHash())) {
+                || !pending.getOtpHash().equals(request.otp())) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "Invalid or expired OTP");
         }
 
