@@ -50,6 +50,7 @@ export const getTotalControllerReviews = () => api.get('/controller/reviews/tota
 export const getAdminPlayers = (page = 0) => api.get(`/admin/players?page=${page}&size=15`).then((r) => r.data);
 export const getAdminControllers = (page = 0) => api.get(`/admin/controllers?page=${page}&size=15`).then((r) => r.data);
 export const getAdminMasters = (page = 0) => api.get(`/admin/masters?page=${page}&size=10`).then((r) => r.data);
+export const deletePlayer = (id) => api.delete(`/admin/players/${id}`).then((r) => r.data);
 export const createHelpTicket = (payload) => api.post('/help/tickets', payload).then((r) => r.data);
 export const getMyHelpTickets = (page = 0) => api.get(`/help/tickets?page=${page}&size=8`).then((r) => r.data);
 export const getMasterHelpTickets = (page = 0) => api.get(`/master/help/tickets?page=${page}&size=8`).then((r) => r.data);

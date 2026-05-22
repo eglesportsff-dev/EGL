@@ -1,6 +1,6 @@
 import { money } from '../utils/format';
 
-export default function AdminDataTable({ title, data, page, onPage, empty, compactStaff = false }) {
+export default function AdminDataTable({ title, data, page, onPage, empty, compactStaff = false, onDelete }) {
   const rows = data?.items || [];
   return (
     <section className="panel overflow-x-auto">
@@ -22,6 +22,7 @@ export default function AdminDataTable({ title, data, page, onPage, empty, compa
             ) : (
               <tr>
                 <th className="py-2">Name</th><th>App UID</th><th>Gaming UID</th><th>Email</th><th>UPI</th><th>Role</th><th>Wallet</th><th>Winning Points</th><th>Verified</th>
+                {onDelete && <th>Actions</th>}
               </tr>
             )}
           </thead>
@@ -44,6 +45,16 @@ export default function AdminDataTable({ title, data, page, onPage, empty, compa
                     <td>{money(row.walletBalance)}</td>
                     <td>{money(row.winningPoints)}</td>
                     <td>{row.emailVerified ? 'Yes' : 'No'}</td>
+                    {onDelete && (
+                      <td className="py-2">
+                        <button
+                          onClick={() => onDelete(row)}
+                          className="rounded-lg bg-red-500/20 px-2.5 py-1.5 text-xs font-bold text-red-300 hover:bg-red-500/40 border border-red-500/30 transition-all"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    )}
                   </>
                 )}
               </tr>

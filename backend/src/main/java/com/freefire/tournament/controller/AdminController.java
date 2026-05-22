@@ -46,4 +46,10 @@ public class AdminController {
                                                @RequestParam(defaultValue = "10") int size) {
         return adminService.users(Role.MASTER_CONTROLLER, page, size);
     }
+
+    @DeleteMapping("/players/{id}")
+    public MessageResponse deletePlayer(@PathVariable Long id) {
+        adminService.deleteUser(id);
+        return new MessageResponse("Player deleted successfully");
+    }
 }
