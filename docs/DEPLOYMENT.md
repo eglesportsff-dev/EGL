@@ -1,53 +1,45 @@
 # Deployment Guide
 
-This guide covers deploying the full-stack Free Fire Inspired Esports Tournament Platform using **Vercel** for the frontend, **Koyeb** for the Spring Boot backend, and **Supabase** for the PostgreSQL database.
+This guide covers deploying the full-stack Free Fire Inspired Esports Tournament Platform using **Vercel** for the frontend and **Render** for the backend database and API.
 
 ---
 
-## 1. Cloud Deployment (Vercel + Koyeb + Supabase) [Recommended]
+## 1. Cloud Deployment (Vercel + Render) [Recommended]
 
-This setup ensures:
-1. **No sleep/wake-up delays** on the free tier (thanks to Koyeb).
-2. **No database expiry** after 90 days (thanks to Supabase).
-3. **Automatic HTTPS/SSL** on all layers.
+This is the easiest way to deploy the application with free-tier options and automatic HTTPS/SSL setup.
 
 ---
 
-### Step 1: Push Code to GitHub
+### Step 1: Create a GitHub Repository & Push Code
 1. Make sure your local project is pushed to your private GitHub repository (`https://github.com/eglesportsff-dev/EGL.git`).
 
 ---
 
-### Step 2: Set Up PostgreSQL on Supabase
-1. Sign in to the [Supabase Dashboard](https://supabase.com/).
-2. Click **"New Project"**, select your organization, and configure:
+### Step 2: Set Up PostgreSQL on Render
+1. Sign in to your [Render Dashboard](https://dashboard.render.com/).
+2. Click **"New"** (top right) and select **"PostgreSQL"** (or use an existing one).
+3. Configure the settings:
    - **Name**: `tournament-db`
-   - **Database Password**: *(Choose a strong password and save it)*
-   - **Region**: Choose the closest region (e.g. `Singapore` or `East US`).
+   - **Database Name**: `esports_tournament`
+   - **Region**: Choose the closest region (e.g. Oregon or Singapore).
    - **Plan**: Select **Free**.
-3. Click **"Create new project"** and wait for the database to provision (1-2 minutes).
-4. Navigate to **Project Settings** (gear icon on the left menu) -> **Database**.
-5. Scroll down to the **Connection string** section, select **URI**, and copy the connection string.
-   - Example: `postgresql://postgres.[YOUR-PROJECT-ID]:[YOUR-PASSWORD]@aws-0-[REGION].pooler.supabase.com:6543/postgres`
-   - *(Note: Remember to replace `[YOUR-PASSWORD]` with your actual password).*
+4. Click **"Create Database"**.
+5. Once active, copy the **Internal Database URL** (e.g. `postgresql://user:password@host/database`). You will use this for the backend service.
 
 ---
 
-### Step 3: Deploy the Spring Boot Backend on Koyeb
-1. Sign in to the [Koyeb Dashboard](https://app.koyeb.com/).
-2. Click **"Create Service"** (or **"Create App"**).
-3. Select **GitHub** as the deployment method and authorize it to access your repositories.
-4. Select your repository `eglesportsff-dev/EGL`.
-5. Configure the service settings:
-   - **Branch**: `main`
-   - **Work Directory**: `/backend`
-   - **Builder**: Select **Docker** (to use our `backend/Dockerfile` automatically).
-   - **Instance Type**: Select **Eco (Nano)** (512MB RAM, 0.25 vCPU - Free).
-   - **Service Name**: `tournament-backend`
-6. Click **"Add Environment Variable"** and enter the following keys and values:
-   - `DATABASE_URL`: *(Your Supabase Connection URI from Step 2 with `jdbc:` prepended. Example: `jdbc:postgresql://postgres.[ID]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:6543/postgres?sslmode=require`)*
-   - `DATABASE_USERNAME`: `postgres.[YOUR-PROJECT-ID]` *(The username portion from your Supabase connection URI)*
-   - `DATABASE_PASSWORD`: *(Your Supabase database password)*
+### Step 3: Deploy the Spring Boot Backend on Render
+1. On your Render dashboard, click **"+ New"** (top right) and select **"Web Service"**.
+2. Select **"Build and deploy from a Git repository"** and choose your `EGL` repository.
+3. Configure the settings:
+   - **Name**: `tournament-backend`
+   - **Root Directory**: `backend`
+   - **Runtime**: `Docker` (Render will build the application using the `backend/Dockerfile` automatically)
+   - **Instance Type**: Select **Free**.
+4. Scroll down and click **"Advanced"**, then click **"Add Environment Variable"** to enter the following values:
+   - `DATABASE_URL`: *(Paste your **Internal Database URL** from Step 2, and add `jdbc:` to the front of it. Example: `jdbc:postgresql://user:password@host/database`)*
+   - `DATABASE_USERNAME`: *(The username from your database credentials)*
+   - `DATABASE_PASSWORD`: *(The password from your database credentials)*
    - `JWT_SECRET`: *(A secure 64+ character random string)*
    - `FRONTEND_ORIGIN`: `https://your-frontend.vercel.app` *(update this to your Vercel URL once the frontend is deployed)*
    - `MAIL_HOST`: `smtp-relay.brevo.com`
@@ -58,12 +50,12 @@ This setup ensures:
    - `ADMIN_EMAIL`: `lavkush01maurya@gmail.com`
    - `ADMIN_PASSWORD`: `Lav#2004`
    - `ADMIN_USERNAME`: `Lavkush`
-7. Click **"Deploy"**. Koyeb will compile and boot your backend. Once active, copy the public URL generated (e.g. `https://[app-name].koyeb.app`).
+5. Click **"Create Web Service"**. Render will compile and launch the backend container. Once it shows a `Live` status, copy the public URL generated by Render (e.g., `https://tournament-backend.onrender.com`).
 
 ---
 
 ### Step 4: Deploy the React Frontend on Vercel
-1. Log in to [Vercel](https://vercel.com/) using your GitHub account.
+1. Log in to [Vercel](https://vercel.com/) with your GitHub account.
 2. Click **"Add New"** > **"Project"** and import your repository.
 3. Configure the project settings:
    - **Framework Preset**: `Vite`
@@ -71,19 +63,19 @@ This setup ensures:
    - **Build Command**: `npm run build`
    - **Output Directory**: `dist`
 4. Expand the **Environment Variables** section and add:
-   - `VITE_API_URL`: `https://[your-app-name].koyeb.app/api` *(replace this with the public Koyeb backend URL you copied in Step 3, making sure to append `/api`)*
+   - `VITE_API_URL`: `https://your-backend.onrender.com/api` *(replace this with the public Render backend URL you copied in Step 3, making sure to append `/api` at the end)*
 5. Click **"Deploy"**. Vercel will build the frontend and provide you with a public `https://...` URL.
 
 ---
 
-### Step 5: Update CORS Origin in Koyeb
-1. Return to your **Koyeb Dashboard** and open your backend service settings.
-2. Go to **Environment Variables** and update the `FRONTEND_ORIGIN` variable with your new Vercel URL (e.g. `https://[your-app-name].vercel.app`).
-3. Save the changes. Koyeb will automatically redeploy the service to apply the new CORS permission.
+### Step 5: Update Frontend URL in Render
+1. Return to your **Render Dashboard** and open your `tournament-backend` service.
+2. Go to **"Environment"** and update the `FRONTEND_ORIGIN` variable with your new Vercel URL (e.g. `https://your-app.vercel.app`).
+3. Save the changes. Render will automatically redeploy the service to apply the new CORS header permissions.
 
 ---
 
 ## 2. Production Checklist
 
-- [ ] **DDL Updates**: Once the database structure is stable, edit the backend env config on Koyeb and set `JPA_DDL_AUTO` to `validate` (instead of `update`).
+- [ ] **DDL Updates**: Once the database structure is stable, edit the backend env config on Render and set `JPA_DDL_AUTO` to `validate` (instead of `update`).
 - [ ] **Rate Limiting & Security**: Route your Vercel frontend domain through Cloudflare for DDoS protection and CDN caching.
