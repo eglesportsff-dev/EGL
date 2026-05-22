@@ -1,0 +1,95 @@
+{
+  "info": {
+    "name": "FFArena Tournament API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080/api" },
+    { "key": "token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Register",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/auth/register",
+        "body": { "mode": "raw", "raw": "{\n  \"username\": \"Player One\",\n  \"email\": \"player@example.com\",\n  \"password\": \"Secret123\"\n}" }
+      }
+    },
+    {
+      "name": "Verify OTP",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/auth/verify-otp",
+        "body": { "mode": "raw", "raw": "{\n  \"email\": \"player@example.com\",\n  \"otp\": \"123456\"\n}" }
+      }
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/auth/login",
+        "body": { "mode": "raw", "raw": "{\n  \"email\": \"player@example.com\",\n  \"password\": \"Secret123\"\n}" }
+      }
+    },
+    {
+      "name": "Matches",
+      "request": { "method": "GET", "url": "{{baseUrl}}/matches" }
+    },
+    {
+      "name": "Create Match",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": "{{baseUrl}}/matches/create",
+        "body": { "mode": "raw", "raw": "{\n  \"title\": \"BR Squad Night\",\n  \"gameType\": \"BATTLE_ROYALE\",\n  \"variant\": \"BR_SQUAD\",\n  \"entryFee\": 12,\n  \"firstReward\": 48,\n  \"secondReward\": 24,\n  \"thirdReward\": 12,\n  \"roomSize\": 48,\n  \"matchTime\": \"2026-05-16T16:00:00Z\",\n  \"registerBefore\": \"2026-05-16T15:30:00Z\"\n}" }
+      }
+    },
+    {
+      "name": "Join Match",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": "{{baseUrl}}/matches/join",
+        "body": { "mode": "raw", "raw": "{\n  \"matchId\": 1\n}" }
+      }
+    },
+    {
+      "name": "Deposit",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": "{{baseUrl}}/wallet/deposit",
+        "body": { "mode": "raw", "raw": "{\n  \"amount\": 100,\n  \"utrNumber\": \"UTR123456\"\n}" }
+      }
+    },
+    {
+      "name": "Withdraw",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": "{{baseUrl}}/wallet/withdraw",
+        "body": { "mode": "raw", "raw": "{\n  \"upiId\": \"player@upi\",\n  \"userUid\": \"FF12345678\",\n  \"amount\": 50\n}" }
+      }
+    },
+    {
+      "name": "Leaderboard",
+      "request": { "method": "GET", "url": "{{baseUrl}}/leaderboard" }
+    }
+  ]
+}

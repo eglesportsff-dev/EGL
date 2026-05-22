@@ -1,0 +1,43 @@
+# Build artifacts
+target
+.m2
+
+# Version control
+.git
+.gitignore
+
+# IDEs
+.idea
+*.iml
+*.vscode
+.vscode
+*.swp
+*.swo
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Documentation
+*.md
+README*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# CI/CD
+.github
+.gitlab-ci.yml
+.jenkins
+
+# Misc
+*.log
+.venv
+venv

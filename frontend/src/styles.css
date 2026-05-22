@@ -1,0 +1,374 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: #070B1A;
+  color: #f8fafc;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+/* added */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.screen-center {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  color: #C4B5FD;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@layer components {
+  .panel {
+    @apply rounded-xl2 border border-white/10 bg-card/90 p-4 shadow-glow;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply btn bg-primary text-white shadow-glow hover:bg-violet-500;
+  }
+
+  .btn-ghost {
+    @apply btn border border-white/10 bg-white/5 text-slate-200 hover:border-primary hover:bg-primary/10;
+  }
+
+  .input {
+    @apply w-full rounded-xl border border-white/10 bg-bg/80 px-3 py-3 text-sm text-slate-100 outline-none focus:border-primary;
+  }
+
+  .hero-grid {
+    background-image:
+      linear-gradient(rgba(139, 92, 246, .08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(139, 92, 246, .08) 1px, transparent 1px);
+    background-size: 72px 72px;
+  }
+
+  .hero-glow {
+    background:
+      radial-gradient(circle at 20% 10%, rgba(139, 92, 246, .25), transparent 35%),
+      radial-gradient(circle at 78% 20%, rgba(124, 58, 237, .20), transparent 32%),
+      #070B1A;
+  }
+}
+
+@media (max-width: 1024px) {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html,
+  body,
+  #root {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  body {
+    min-width: 0;
+  }
+
+  .min-h-screen.bg-arena.lg\:grid {
+    display: block;
+  }
+
+  .min-h-screen.bg-arena.lg\:grid > aside.lg\:block {
+    display: none !important;
+  }
+
+  header .lg\:hidden,
+  .mobile-sidebar-shell.lg\:hidden {
+    display: block !important;
+  }
+
+  header .flex.lg\:hidden {
+    display: flex !important;
+  }
+
+  .mobile-sidebar-shell {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    pointer-events: none;
+  }
+
+  .mobile-sidebar-shell.is-open {
+    pointer-events: auto;
+  }
+
+  .mobile-sidebar-overlay {
+    position: absolute;
+    inset: 0;
+    min-height: 44px;
+    width: 100%;
+    border: 0;
+    background: rgba(0, 0, 0, 0.72);
+    opacity: 0;
+    transition: opacity 220ms ease;
+  }
+
+  .mobile-sidebar-shell.is-open .mobile-sidebar-overlay {
+    opacity: 1;
+  }
+
+  .mobile-sidebar-drawer {
+    width: 75%;
+    max-width: 280px;
+    transform: translateX(-100%);
+    transition: transform 260ms ease;
+    will-change: transform;
+  }
+
+  .mobile-sidebar-shell.is-open .mobile-sidebar-drawer {
+    transform: translateX(0);
+  }
+
+  .mobile-sidebar-drawer nav a {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  .panel,
+  article,
+  section,
+  form,
+  table {
+    min-width: 0;
+  }
+
+  [class*="lg:grid-cols"] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  main.hero-grid {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    font-size: 16px;
+  }
+
+  header {
+    width: 100%;
+  }
+
+  header > div {
+    min-height: 64px;
+    padding: 0.75rem;
+  }
+
+  header img {
+    flex: 0 0 auto;
+  }
+
+  header .flex-1 {
+    min-width: 0;
+  }
+
+  main.hero-grid {
+    padding: 1rem 0.875rem;
+    min-height: calc(100vh - 64px);
+  }
+
+  .panel {
+    width: 100%;
+    padding: 1rem;
+  }
+
+  .btn,
+  .btn-primary,
+  .btn-ghost,
+  button,
+  a.btn,
+  a.btn-primary,
+  a.btn-ghost {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+
+  .input {
+    min-height: 44px;
+    font-size: 1rem;
+  }
+
+  h1.text-3xl {
+    font-size: 1.65rem;
+    line-height: 2.05rem;
+  }
+
+  .text-2xl {
+    font-size: 1.35rem;
+    line-height: 1.8rem;
+  }
+
+  .text-xl {
+    font-size: 1.15rem;
+    line-height: 1.65rem;
+  }
+
+  .grid {
+    max-width: 100%;
+  }
+
+  [class*="sm:grid-cols"],
+  [class*="md:grid-cols"],
+  [class*="lg:grid-cols"],
+  [class*="grid-cols-["] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .grid > .panel,
+  .grid > article,
+  .grid > form,
+  .grid > section,
+  .grid > div {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .flex {
+    min-width: 0;
+  }
+
+  .flex-wrap {
+    row-gap: 0.5rem;
+  }
+
+  .justify-between {
+    min-width: 0;
+  }
+
+  .rounded-3xl,
+  .rounded-2xl,
+  .rounded-xl,
+  .rounded-xl2 {
+    max-width: 100%;
+  }
+
+  img,
+  video,
+  canvas,
+  svg {
+    max-width: 100%;
+  }
+
+  table {
+    max-width: 100%;
+    min-width: 100% !important;
+    table-layout: auto;
+  }
+
+  th,
+  td {
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  .overflow-x-auto {
+    max-width: 100%;
+    overflow-x: visible;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  header .btn-ghost {
+    min-width: 44px;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  .mobile-sidebar-drawer {
+    padding: 1rem;
+  }
+
+  .mobile-sidebar-drawer img {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .mobile-sidebar-drawer nav {
+    gap: 0.5rem;
+  }
+
+  .mobile-sidebar-drawer nav a {
+    padding: 0.75rem;
+    font-size: 0.95rem;
+  }
+
+  .fixed.inset-0 .panel,
+  .fixed.inset-0 [class*="max-w-"] {
+    width: min(100%, calc(100vw - 1.5rem)) !important;
+    max-width: calc(100vw - 1.5rem) !important;
+  }
+
+  .fixed.inset-0 {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  .space-y-5 > :not([hidden]) ~ :not([hidden]),
+  .space-y-4 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 1rem;
+  }
+}
+
+@media (max-width: 420px) {
+  main.hero-grid {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  header > div {
+    gap: 0.5rem;
+  }
+
+  header .btn-ghost {
+    padding-left: 0.65rem;
+    padding-right: 0.65rem;
+  }
+
+  .panel {
+    padding: 0.875rem;
+  }
+
+  h1.text-3xl {
+    font-size: 1.5rem;
+    line-height: 1.9rem;
+  }
+}
