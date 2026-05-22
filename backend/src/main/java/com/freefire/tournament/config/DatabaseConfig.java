@@ -40,6 +40,13 @@ public class DatabaseConfig {
                         }
                         
                         String jdbcUrl = "jdbc:postgresql://" + host + ":" + port + "/" + dbPath;
+                        
+                        // Debug logs for Render deployment troubleshooting
+                        System.out.println("[DatabaseConfig] Raw URL length: " + (rawUrl != null ? rawUrl.length() : 0));
+                        System.out.println("[DatabaseConfig] Parsed JDBC URL: " + jdbcUrl);
+                        System.out.println("[DatabaseConfig] Parsed Username: " + username);
+                        System.out.println("[DatabaseConfig] Parsed Password length: " + (password != null ? password.length() : 0));
+                        
                         HikariDataSource dataSource = new HikariDataSource();
                         dataSource.setJdbcUrl(jdbcUrl);
                         dataSource.setUsername(username);
@@ -56,6 +63,9 @@ public class DatabaseConfig {
                             port = Integer.parseInt(authority.substring(portColonIndex + 1));
                         }
                         String jdbcUrl = "jdbc:postgresql://" + host + ":" + port + "/" + dbPath;
+                        
+                        System.out.println("[DatabaseConfig] No credentials in URL. Parsed JDBC URL: " + jdbcUrl);
+                        
                         HikariDataSource dataSource = new HikariDataSource();
                         dataSource.setJdbcUrl(jdbcUrl);
                         dataSource.setUsername(properties.getUsername());
@@ -64,11 +74,14 @@ public class DatabaseConfig {
                     }
                 }
             } catch (Exception e) {
+                System.err.println("[DatabaseConfig] Error parsing database URL: " + e.getMessage());
+                e.printStackTrace();
                 // Fallback to standard builder if parsing fails
                 return properties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
             }
         }
         
+        System.out.println("[DatabaseConfig] Fallback to standard Spring Boot datasource configuration.");
         return properties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
     }
 }
