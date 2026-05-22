@@ -4,6 +4,8 @@ import com.freefire.tournament.dto.AuthDtos.*;
 import com.freefire.tournament.entity.Role;
 import com.freefire.tournament.entity.User;
 import com.freefire.tournament.exception.ApiException;
+import com.freefire.tournament.entity.PendingRegistration;
+import com.freefire.tournament.repository.PendingRegistrationRepository;
 import com.freefire.tournament.repository.UserRepository;
 import com.freefire.tournament.security.JwtService;
 import com.freefire.tournament.util.CodeGenerator;
@@ -18,15 +20,18 @@ import java.time.Instant;
 @Service
 public class AuthService {
     private final UserRepository users;
+    private final PendingRegistrationRepository pendingRegistrations;
     private final PasswordEncoder encoder;
     private final EmailService emailService;
     private final JwtService jwtService;
     private final long otpTtlMinutes;
 
-    public AuthService(UserRepository users, PasswordEncoder encoder, EmailService emailService,
+    public AuthService(UserRepository users, PendingRegistrationRepository pendingRegistrations,
+                       PasswordEncoder encoder, EmailService emailService,
                        JwtService jwtService,
                        @Value("${app.otp.ttl-minutes}") long otpTtlMinutes) {
         this.users = users;
+        this.pendingRegistrations = pendingRegistrations;
         this.encoder = encoder;
         this.emailService = emailService;
         this.jwtService = jwtService;
@@ -37,62 +42,75 @@ public class AuthService {
     public MessageResponse register(RegisterRequest request) {
         String emailLower = request.email().toLowerCase();
         
-        // 1. Check if email is already registered and verified
-        User existingUserByEmail = users.findByEmail(emailLower).orElse(null);
-        if (existingUserByEmail != null && existingUserByEmail.isEmailVerified()) {
+        // 1. Check if email is already registered in the users table
+        if (users.existsByEmail(emailLower)) {
             throw new ApiException(HttpStatus.CONFLICT, "Email already registered");
         }
 
-        // 2. Check if gaming UID is already registered and verified
-        User existingUserByGameUid = users.findByGameUid(request.gameUid()).orElse(null);
-        if (existingUserByGameUid != null && existingUserByGameUid.isEmailVerified()) {
+        // 2. Check if gaming UID is already registered in the users table
+        if (users.existsByGameUid(request.gameUid())) {
             throw new ApiException(HttpStatus.CONFLICT, "Gaming UID already registered");
         }
 
         // 3. Generate new OTP
         String otp = CodeGenerator.otp();
-        User user;
-
-        if (existingUserByEmail != null) {
-            // Re-use the existing unverified user record matching this email
-            user = existingUserByEmail;
-        } else if (existingUserByGameUid != null) {
-            // Re-use the existing unverified user record matching this game UID
-            user = existingUserByGameUid;
-        } else {
-            // Create a brand new user
-            user = new User();
-            user.setUid(CodeGenerator.uid());
+        
+        // Check if there is an existing pending registration for this email
+        PendingRegistration pending = pendingRegistrations.findByEmail(emailLower).orElse(null);
+        if (pending == null) {
+            pending = new PendingRegistration();
+            pending.setEmail(emailLower);
         }
 
-        user.setUsername(request.username());
-        user.setGameUid(request.gameUid());
-        user.setProfileScreenshotUrl(request.profileScreenshotUrl());
-        user.setUpiId(request.upiId());
-        user.setEmail(emailLower);
-        user.setPasswordHash(encoder.encode(request.password()));
-        user.setOtpHash(encoder.encode(otp));
-        user.setOtpExpiresAt(Instant.now().plusSeconds(otpTtlMinutes * 60));
+        pending.setUsername(request.username());
+        pending.setGameUid(request.gameUid());
+        pending.setProfileScreenshotUrl(request.profileScreenshotUrl());
+        pending.setUpiId(request.upiId());
+        pending.setPasswordHash(encoder.encode(request.password()));
+        pending.setOtpHash(encoder.encode(otp));
+        pending.setOtpExpiresAt(Instant.now().plusSeconds(otpTtlMinutes * 60));
         
-        users.save(user);
-        emailService.sendOtp(user.getEmail(), otp);
+        pendingRegistrations.save(pending);
+        
+        emailService.sendOtp(pending.getEmail(), otp);
         return new MessageResponse("Registration started. Verify OTP sent to email.");
     }
 
     @Transactional
     public MessageResponse verifyOtp(VerifyOtpRequest request) {
-        User user = users.findByEmail(request.email().toLowerCase())
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "User not found"));
-        if (user.isEmailVerified()) {
+        String emailLower = request.email().toLowerCase();
+        
+        // Check if user is already in the main users table (already verified)
+        if (users.existsByEmail(emailLower)) {
             return new MessageResponse("Email already verified");
         }
-        if (user.getOtpExpiresAt() == null || user.getOtpExpiresAt().isBefore(Instant.now())
-                || !encoder.matches(request.otp(), user.getOtpHash())) {
+
+        // Find the pending registration
+        PendingRegistration pending = pendingRegistrations.findByEmail(emailLower)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "No registration pending for this email"));
+
+        // Verify OTP
+        if (pending.getOtpExpiresAt() == null || pending.getOtpExpiresAt().isBefore(Instant.now())
+                || !encoder.matches(request.otp(), pending.getOtpHash())) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "Invalid or expired OTP");
         }
+
+        // Create the actual user
+        User user = new User();
+        user.setUid(CodeGenerator.uid());
+        user.setUsername(pending.getUsername());
+        user.setGameUid(pending.getGameUid());
+        user.setProfileScreenshotUrl(pending.getProfileScreenshotUrl());
+        user.setUpiId(pending.getUpiId());
+        user.setEmail(pending.getEmail());
+        user.setPasswordHash(pending.getPasswordHash());
         user.setEmailVerified(true);
-        user.setOtpHash(null);
-        user.setOtpExpiresAt(null);
+        
+        users.save(user);
+
+        // Delete the pending registration record
+        pendingRegistrations.delete(pending);
+
         return new MessageResponse("Email verified. Login with email and password.");
     }
 

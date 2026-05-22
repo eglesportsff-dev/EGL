@@ -64,6 +64,8 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void repairLegacySchema() {
+        // Clean up any legacy unverified user accounts from the main users table
+        jdbc.execute("delete from users where email_verified = false");
         jdbc.execute("alter table if exists matches add column if not exists team_only boolean not null default false");
         jdbc.execute("""
                 do $$
