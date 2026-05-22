@@ -17,12 +17,16 @@ public class EmailService {
             @Value("${spring.mail.password:}") String apiKey,
             @Value("${spring.mail.properties.mail.from:}") String fromAddress) {
         this.apiKey = apiKey;
-        this.fromAddress = fromAddress;
+        this.fromAddress = (fromAddress == null || fromAddress.isBlank() || fromAddress.contains("your-email")) 
+                           ? "eglesportsff@gmail.com" 
+                           : fromAddress;
         this.httpClient = HttpClient.newBuilder().build();
     }
 
     public void sendOtp(String to, String otp) {
-        if (fromAddress == null || fromAddress.isBlank() || fromAddress.contains("your-email") || apiKey == null || apiKey.isBlank()) {
+        System.out.println("EmailService: Preparing to send OTP to " + to + " using sender " + fromAddress);
+        if (apiKey == null || apiKey.isBlank()) {
+            System.err.println("EmailService: Brevo API Key (MAIL_PASSWORD) is missing or empty! Bypassing email sending.");
             logFallback(to, otp);
             return;
         }

@@ -35,23 +35,45 @@ public class AuthService {
 
     @Transactional
     public MessageResponse register(RegisterRequest request) {
-        if (users.existsByEmail(request.email())) {
+        String emailLower = request.email().toLowerCase();
+        
+        // 1. Check if email is already registered and verified
+        User existingUserByEmail = users.findByEmail(emailLower).orElse(null);
+        if (existingUserByEmail != null && existingUserByEmail.isEmailVerified()) {
             throw new ApiException(HttpStatus.CONFLICT, "Email already registered");
         }
-        if (users.existsByGameUid(request.gameUid())) {
+
+        // 2. Check if gaming UID is already registered and verified
+        User existingUserByGameUid = users.findByGameUid(request.gameUid()).orElse(null);
+        if (existingUserByGameUid != null && existingUserByGameUid.isEmailVerified()) {
             throw new ApiException(HttpStatus.CONFLICT, "Gaming UID already registered");
         }
+
+        // 3. Generate new OTP
         String otp = CodeGenerator.otp();
-        User user = new User();
-        user.setUid(CodeGenerator.uid());
+        User user;
+
+        if (existingUserByEmail != null) {
+            // Re-use the existing unverified user record matching this email
+            user = existingUserByEmail;
+        } else if (existingUserByGameUid != null) {
+            // Re-use the existing unverified user record matching this game UID
+            user = existingUserByGameUid;
+        } else {
+            // Create a brand new user
+            user = new User();
+            user.setUid(CodeGenerator.uid());
+        }
+
         user.setUsername(request.username());
         user.setGameUid(request.gameUid());
         user.setProfileScreenshotUrl(request.profileScreenshotUrl());
         user.setUpiId(request.upiId());
-        user.setEmail(request.email().toLowerCase());
+        user.setEmail(emailLower);
         user.setPasswordHash(encoder.encode(request.password()));
         user.setOtpHash(encoder.encode(otp));
         user.setOtpExpiresAt(Instant.now().plusSeconds(otpTtlMinutes * 60));
+        
         users.save(user);
         emailService.sendOtp(user.getEmail(), otp);
         return new MessageResponse("Registration started. Verify OTP sent to email.");
