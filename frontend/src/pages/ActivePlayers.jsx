@@ -2,9 +2,10 @@ import { useMemo, useState } from 'react';
 import { getActivePlayers, sendMessage } from '../services/tournamentService';
 import useAsync from '../hooks/useAsync';
 import Alert from '../components/Alert';
-
+import { useAuth } from '../context/AuthContext';
 
 export default function ActivePlayers() {
+  const { user } = useAuth();
   const [page, setPage] = useState(0);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [message, setMessage] = useState('');
@@ -13,23 +14,30 @@ export default function ActivePlayers() {
   const [wordCount, setWordCount] = useState(0);
   const [search, setSearch] = useState('');
 
-  const { data, loading, error } = useAsync(() => getActivePlayers(page, 10, search), [page, search]);
+  const { data, loading, error } = useAsync(() => getActivePlayers(page, 5, search), [page, search]);
   const loadedPlayers = data || [];
   const isSearching = search.trim().length > 0;
+
   const players = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
 
-    if (!normalizedSearch) {
-      return loadedPlayers;
+    // Exclude the current user from the list
+    let list = loadedPlayers;
+    if (user) {
+      list = list.filter((p) => p.userId !== user.id);
     }
 
-    return loadedPlayers.filter((player) => {
+    if (!normalizedSearch) {
+      return list;
+    }
+
+    return list.filter((player) => {
       const username = (player.username || '').toLowerCase();
       const gameUid = (player.gameUid || '').toLowerCase();
 
       return username.includes(normalizedSearch) || gameUid.includes(normalizedSearch);
     });
-  }, [loadedPlayers, search]);
+  }, [loadedPlayers, search, user]);
 
   const handleMessageChange = (e) => {
     const text = e.target.value;
@@ -137,7 +145,7 @@ export default function ActivePlayers() {
               <p className="text-xs font-bold text-gold uppercase">Active Now ({activeCount})</p>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
                 {players.filter(p => p.status === 'ACTIVE').map((player) => (
-                  <PlayerCard key={player.userId} player={player} onMessage={setSelectedPlayer} />
+                  <PlayerCard key={player.userId} player={player} onClick={setSelectedPlayer} />
                 ))}
               </div>
             </section>
@@ -148,7 +156,7 @@ export default function ActivePlayers() {
               <p className="text-xs font-bold text-gold uppercase">Recently Active ({recentCount})</p>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
                 {players.filter(p => p.status === 'RECENT').map((player) => (
-                  <PlayerCard key={player.userId} player={player} onMessage={setSelectedPlayer} />
+                  <PlayerCard key={player.userId} player={player} onClick={setSelectedPlayer} />
                 ))}
               </div>
             </section>
@@ -159,7 +167,7 @@ export default function ActivePlayers() {
               <p className="text-xs font-bold text-gold uppercase">Other Players ({inactiveCount})</p>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
                 {players.filter(p => p.status === 'INACTIVE').map((player) => (
-                  <PlayerCard key={player.userId} player={player} onMessage={setSelectedPlayer} />
+                  <PlayerCard key={player.userId} player={player} onClick={setSelectedPlayer} />
                 ))}
               </div>
             </section>
@@ -174,7 +182,11 @@ export default function ActivePlayers() {
               Previous
             </button>
             <span className="text-secondary">Page {page + 1}</span>
-            <button className="btn-secondary" onClick={() => setPage(p => p + 1)}>
+            <button
+              className="btn-secondary"
+              disabled={loadedPlayers.length < 5}
+              onClick={() => setPage(p => p + 1)}
+            >
               Next
             </button>
           </section>
@@ -182,12 +194,13 @@ export default function ActivePlayers() {
       )}
 
       {selectedPlayer && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 py-6">
-          <div className="panel w-full max-w-md space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-4 py-6 overflow-y-auto">
+          <div className="panel w-full max-w-lg space-y-5 bg-gradient-to-b from-card to-bg border border-white/10 shadow-2xl relative my-auto">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-black">Message {selectedPlayer.username}</h2>
+              <h2 className="text-xl font-black text-white">Player Profile</h2>
               <button
-                className="text-2xl"
+                className="text-secondary hover:text-white transition-colors text-2xl p-1"
+                aria-label="Close profile details"
                 onClick={() => {
                   setSelectedPlayer(null);
                   setMessage('');
@@ -198,42 +211,75 @@ export default function ActivePlayers() {
               </button>
             </div>
 
-            {selectedPlayer.profileScreenshotUrl && (
-              <img
-                src={selectedPlayer.profileScreenshotUrl}
-                alt={selectedPlayer.username}
-                className="h-20 w-20 rounded-lg object-cover"
-              />
+            {selectedPlayer.profileScreenshotUrl ? (
+              <div className="relative w-full overflow-hidden rounded-xl border border-white/10 bg-black/40 p-1 flex justify-center items-center">
+                <img
+                  src={selectedPlayer.profileScreenshotUrl}
+                  alt={selectedPlayer.username}
+                  className="max-h-72 w-full object-contain rounded-lg"
+                />
+              </div>
+            ) : (
+              <div className="w-full h-32 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center text-secondary">
+                No screenshot uploaded
+              </div>
             )}
 
-            <div>
-              <p className="text-sm text-secondary">Username: {selectedPlayer.username}</p>
-              <p className="text-sm text-secondary">Gaming UID: {selectedPlayer.gameUid || 'Not set'}</p>
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <div className="bg-white/5 p-3 rounded-xl border border-white/5">
+                <span className="text-xs text-secondary block">Username</span>
+                <span className="font-bold text-white text-base truncate block">{selectedPlayer.username}</span>
+              </div>
+              <div className="bg-white/5 p-3 rounded-xl border border-white/5">
+                <span className="text-xs text-secondary block">Gaming UID</span>
+                <span className="font-bold text-white text-base truncate block">{selectedPlayer.gameUid || 'Not set'}</span>
+              </div>
+              <div className="bg-white/5 p-3 rounded-xl border border-white/5">
+                <span className="text-xs text-secondary block">Winning Points</span>
+                <span className="font-bold text-gold text-base block">{selectedPlayer.winningPoints ?? 0}</span>
+              </div>
+              <div className="bg-white/5 p-3 rounded-xl border border-white/5">
+                <span className="text-xs text-secondary block">Status</span>
+                <span className="inline-flex items-center gap-1.5 font-bold mt-1 text-sm">
+                  <span className={`h-2.5 w-2.5 rounded-full ${
+                    selectedPlayer.status === 'ACTIVE' ? 'bg-green-500' :
+                    selectedPlayer.status === 'RECENT' ? 'bg-yellow-500' : 'bg-gray-500'
+                  }`} />
+                  {selectedPlayer.status === 'ACTIVE' ? 'Active Now' :
+                   selectedPlayer.status === 'RECENT' ? 'Recently Active' : 'Inactive'}
+                </span>
+              </div>
             </div>
 
-            <div>
+            <div className="space-y-2 border-t border-white/10 pt-4">
+              <label className="text-xs font-bold text-gold uppercase block">Send Message</label>
               <textarea
-                className="input min-h-24 resize-y"
+                className="input min-h-20 resize-none text-sm"
                 placeholder="Type your message (max 10 words)..."
                 value={message}
                 onChange={handleMessageChange}
-                maxLength={100}
+                maxLength={120}
               />
-              <p className={`mt-2 text-xs ${wordCount > 10 ? 'text-red-400' : 'text-secondary'}`}>
-                Words: {wordCount}/10
-              </p>
+              <div className="flex justify-between items-center">
+                <p className={`text-xs ${wordCount > 10 ? 'text-red-400 font-bold' : 'text-secondary'}`}>
+                  Words: {wordCount}/10
+                </p>
+                {wordCount > 10 && (
+                  <p className="text-xs text-red-400 font-semibold">Must be 10 words or less</p>
+                )}
+              </div>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex gap-3 pt-2">
               <button
-                className="btn-primary flex-1"
+                className="btn-primary flex-1 py-2.5 font-bold"
                 disabled={sending || wordCount === 0 || wordCount > 10}
                 onClick={handleSendMessage}
               >
                 {sending ? 'Sending...' : 'Send Message'}
               </button>
               <button
-                className="btn-ghost flex-1"
+                className="btn-ghost flex-1 py-2.5 font-bold"
                 onClick={() => {
                   setSelectedPlayer(null);
                   setMessage('');
@@ -250,52 +296,27 @@ export default function ActivePlayers() {
   );
 }
 
-function PlayerCard({ player, onMessage }) {
+function PlayerCard({ player, onClick }) {
   const statusColor = {
     ACTIVE: 'bg-green-500',
     RECENT: 'bg-yellow-500',
     INACTIVE: 'bg-gray-500'
   };
 
-  const statusText = {
-    ACTIVE: 'Active Now',
-    RECENT: 'Recently Active',
-    INACTIVE: 'Inactive'
-  };
-
   return (
-    <div className="panel relative space-y-2 overflow-hidden">
-      {/* Status indicator */}
-      <div className={`absolute top-2 right-2 h-3 w-3 rounded-full ${statusColor[player.status]}`} />
+    <div
+      onClick={() => onClick(player)}
+      className="panel relative flex flex-col justify-center cursor-pointer border border-white/5 hover:border-primary/55 hover:shadow-glow-sm transition-all duration-200 p-4 min-h-[5.5rem] select-none"
+    >
+      {/* Status dot */}
+      <div className={`absolute top-3 right-3 h-3 w-3 rounded-full ${statusColor[player.status]}`} />
 
-      {/* Profile image */}
-      {player.profileScreenshotUrl && (
-        <img
-          src={player.profileScreenshotUrl}
-          alt={player.username}
-          className="h-24 w-full rounded-lg object-cover"
-        />
-      )}
-
-      {/* Player info */}
-      <div className="truncate">
-        <p className="truncate font-bold">{player.username}</p>
-        <p className="truncate text-xs text-secondary">UID: {player.gameUid || 'No UID'}</p>
+      {/* Info */}
+      <div className="pr-6">
+        <p className="font-bold text-white text-base truncate">{player.username}</p>
+        <p className="text-xs text-secondary mt-1 truncate">UID: {player.gameUid || 'No UID'}</p>
       </div>
-
-      {/* Status and points */}
-      <div className="space-y-1 text-xs">
-        <p className="text-secondary">{statusText[player.status]}</p>
-        <p className="text-gold">Points: {player.winningPoints}</p>
-      </div>
-
-      {/* Message button */}
-      <button
-        className="btn-primary w-full py-2 text-center text-sm"
-        onClick={() => onMessage(player)}
-      >
-        + Message
-      </button>
     </div>
   );
 }
+

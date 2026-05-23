@@ -24,7 +24,13 @@ public class PlayerController {
     public List<ActivePlayerRow> getActivePlayers(@RequestParam(defaultValue = "0") int page,
                                                    @RequestParam(defaultValue = "10") int size,
                                                    @RequestParam(required = false) String q) {
-        return playerService.getActivePlayers(page, size, q);
+        com.freefire.tournament.entity.User loggedInUser = null;
+        try {
+            loggedInUser = currentUser.get();
+        } catch (Exception e) {
+            // Ignore if unauthorized
+        }
+        return playerService.getActivePlayers(page, size, q, loggedInUser);
     }
 
     @PostMapping("/messages/send")

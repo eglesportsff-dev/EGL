@@ -147,9 +147,9 @@ export default function Messages() {
                     const isCurrentUser = m.senderId === user?.id;
                     return (
                       <div key={m.id} className={`flex ${isCurrentUser ? 'justify-end' : 'justify-start'}`}>
-                        <div className={`max-w-[80%] rounded-3xl p-4 text-sm leading-6 ${isCurrentUser ? 'bg-primary/80 text-right text-white shadow-[0_10px_30px_rgba(139,92,246,0.32)]' : 'bg-white/5 text-left border border-white/10'} ${isCurrentUser ? 'animate-[pop_0.18s_ease-out]' : ''}`}>
-                          <div>{m.content}</div>
-                          <div className="mt-2 text-[11px] text-slate-400">
+                        <div className={`max-w-[50%] rounded-2xl py-2 px-3.5 text-sm leading-5 ${isCurrentUser ? 'bg-primary/80 text-right text-white shadow-[0_10px_30px_rgba(139,92,246,0.32)]' : 'bg-white/5 text-left border border-white/10'} ${isCurrentUser ? 'animate-[pop_0.18s_ease-out]' : ''}`}>
+                          <div className="break-words">{m.content}</div>
+                          <div className="mt-1 text-[9px] text-slate-400">
                             {m.createdAt ? new Date(m.createdAt).toLocaleString() : ''}
                           </div>
                         </div>
@@ -160,7 +160,7 @@ export default function Messages() {
               </div>
 
               <div className="mt-2">
-                <textarea className="input w-full" rows={4} value={text} onChange={(e) => setText(e.target.value)} placeholder="Type a reply (max 10 words)..." />
+                <textarea className="input w-full" rows={2} value={text} onChange={(e) => setText(e.target.value)} placeholder="Type a reply (max 10 words)..." />
                 <div className="flex gap-2 mt-2">
                   <button className="btn-primary" onClick={handleSend} disabled={sending || text.trim().length === 0}>{sending ? 'Sending...' : 'Send'}</button>
                   <button className="btn-ghost" onClick={() => {

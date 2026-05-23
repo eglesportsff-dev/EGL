@@ -26,7 +26,6 @@ public class PlayerService {
     private final PlayerMessageRepository messages;
     private final NotificationService notifications;
 
-
     public PlayerService(UserRepository users, PlayerMessageRepository messages, NotificationService notifications) {
         this.users = users;
         this.messages = messages;
@@ -34,7 +33,7 @@ public class PlayerService {
     }
 
     @Transactional(readOnly = true)
-    public List<ActivePlayerRow> getActivePlayers(int page, int size, String search) {
+    public List<ActivePlayerRow> getActivePlayers(int page, int size, String search, User loggedInUser) {
         Instant oneWeekAgo = Instant.now().minusSeconds(7 * 24 * 60 * 60);
         String normalizedSearch = search == null ? "" : search.trim().toLowerCase(Locale.ROOT);
         
@@ -43,6 +42,7 @@ public class PlayerService {
         
         return allUsers.stream()
             .filter(u -> u.getRole().name().equals("USER"))
+            .filter(u -> loggedInUser == null || !u.getId().equals(loggedInUser.getId()))
             .filter(u -> matchesSearch(u, normalizedSearch))
             .map(u -> {
                 String status;
@@ -116,6 +116,13 @@ public class PlayerService {
         sender.setLastActivityAt(Instant.now());
         users.save(sender);
 
+        // Auto delete old messages: only keep last 10 messages in this conversation
+        List<PlayerMessage> conv = messages.findConversation(sender.getId(), recipient.getId());
+        if (conv.size() > 10) {
+            List<PlayerMessage> toDelete = conv.subList(10, conv.size());
+            messages.deleteAll(toDelete);
+        }
+
         return new MessageResponse("Message sent successfully");
     }
 
@@ -134,6 +141,7 @@ public class PlayerService {
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "User not found"));
 
         return messages.findConversation(currentUser.getId(), otherUserId).stream()
+                .limit(10)
                 .sorted(Comparator.comparing(PlayerMessage::getCreatedAt))
                 .map(m -> new PlayerMessageRow(m.getId(), m.getSender().getId(),
                                               m.getSender().getUsername(), m.getContent(),
