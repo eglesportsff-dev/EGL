@@ -25,11 +25,14 @@ public class PlayerService {
     private final UserRepository users;
     private final PlayerMessageRepository messages;
     private final NotificationService notifications;
+    private final PushNotificationService pushNotificationService;
 
-    public PlayerService(UserRepository users, PlayerMessageRepository messages, NotificationService notifications) {
+    public PlayerService(UserRepository users, PlayerMessageRepository messages, 
+                         NotificationService notifications, PushNotificationService pushNotificationService) {
         this.users = users;
         this.messages = messages;
         this.notifications = notifications;
+        this.pushNotificationService = pushNotificationService;
     }
 
     @Transactional(readOnly = true)
@@ -121,6 +124,13 @@ public class PlayerService {
         if (conv.size() > 10) {
             List<PlayerMessage> toDelete = conv.subList(10, conv.size());
             messages.deleteAll(toDelete);
+        }
+
+        // Trigger Web Push Notification to recipient!
+        try {
+            pushNotificationService.sendPushNotification(recipient, "New Message from " + sender.getUsername(), request.content());
+        } catch (Exception e) {
+            System.err.println("Failed to send message push notification: " + e.getMessage());
         }
 
         return new MessageResponse("Message sent successfully");

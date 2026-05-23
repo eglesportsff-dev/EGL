@@ -182,4 +182,7 @@ public class AppDtos {
 
     public record MessageConversationRow(Long userId, String username, String gameUid, String profileScreenshotUrl,
                                         String lastMessage, boolean hasUnread, Instant lastMessageTime) {}
+
+    public record PushSubscriptionRequest(String endpoint, String p256dh, String auth) {}
+    public record VapidPublicKeyResponse(String publicKey) {}
 }

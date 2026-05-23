@@ -17,9 +17,11 @@ public class NotificationService {
     private static final int MAX_NOTIFICATIONS_PER_USER = 12;
 
     private final UserNotificationRepository notifications;
+    private final PushNotificationService pushNotificationService;
 
-    public NotificationService(UserNotificationRepository notifications) {
+    public NotificationService(UserNotificationRepository notifications, PushNotificationService pushNotificationService) {
         this.notifications = notifications;
+        this.pushNotificationService = pushNotificationService;
     }
 
     @Transactional
@@ -40,6 +42,12 @@ public class NotificationService {
         notification.setReferenceId(referenceId);
         notifications.save(notification);
         trim(user.getId());
+
+        try {
+            pushNotificationService.sendPushNotification(user, title, message);
+        } catch (Exception e) {
+            System.err.println("Failed to send web push notification: " + e.getMessage());
+        }
     }
 
     @Transactional

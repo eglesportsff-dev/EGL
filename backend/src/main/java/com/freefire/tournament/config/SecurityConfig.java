@@ -36,7 +36,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/register", "/api/auth/verify-otp", "/api/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/matches", "/api/leaderboard", "/api/tournaments/updates", "/api/tournament/*/point-table", "/api/players/active").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/matches", "/api/leaderboard", "/api/tournaments/updates", "/api/tournament/*/point-table", "/api/players/active", "/api/push/vapid-public-key").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/matches/create").hasRole("CONTROLLER")
                         .requestMatchers(HttpMethod.POST, "/api/matches/join").hasRole("USER")
                         .requestMatchers(HttpMethod.POST, "/api/matches/join-team").hasRole("USER")

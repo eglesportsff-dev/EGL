@@ -1,5 +1,6 @@
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, useContext, useMemo, useState, useEffect } from 'react';
 import * as authService from '../services/authService';
+import { subscribeToPushNotifications } from '../utils/pushNotifications';
 
 const AuthContext = createContext(null);
 
@@ -15,6 +16,12 @@ export function AuthProvider({ children }) {
       return null;
     }
   });
+
+  useEffect(() => {
+    if (user) {
+      subscribeToPushNotifications().catch(err => console.warn(err));
+    }
+  }, [user]);
 
   const signIn = async (payload) => {
     const data = await authService.login(payload);
