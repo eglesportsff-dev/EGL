@@ -532,13 +532,15 @@ public class MatchService {
     private void cancelTeamRegistrationAfterReject(TeamInvite rejectedInvite) {
         GameMatch match = rejectedInvite.getMatch();
         Team team = rejectedInvite.getTeam();
-        User leader = rejectedInvite.getInviter();
-        participants.findByMatchIdAndUserId(match.getId(), leader.getId()).ifPresent(participant -> {
-            if (participant.getTeam() != null && participant.getTeam().getId().equals(team.getId())) {
-                participants.delete(participant);
-                refundEntryFee(match, leader, "Refund for rejected team invite: " + match.getTitle() + " (" + team.getName() + ")");
-            }
+        List<MatchParticipant> teamParticipants = participants.findByMatchIdOrderByJoinedAtAsc(match.getId()).stream()
+                .filter(p -> p.getTeam() != null && p.getTeam().getId().equals(team.getId()))
+                .toList();
+        teamParticipants.forEach(participant -> {
+            participants.delete(participant);
+            refundEntryFee(match, participant.getUser(), "Refund for rejected team invite: " + match.getTitle() + " (" + team.getName() + ")");
         });
+        List<TeamInvite> teamInvites = invites.findByMatchIdAndTeamId(match.getId(), team.getId());
+        invites.deleteAll(teamInvites);
     }
 
     private void ensureTeamMember(Team team, User user) {
