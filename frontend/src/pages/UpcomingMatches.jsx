@@ -17,7 +17,7 @@ export default function UpcomingMatches() {
         <p className="text-sm font-bold text-gold">Your Schedule</p>
         <h1 className="mt-2 text-3xl font-black">Upcoming Matches</h1>
         <p className="mt-2 text-sm text-secondary">
-          Matches where your entry is registered and the match time is still ahead.
+          Matches where your entry is registered and are upcoming or currently live.
         </p>
       </section>
 

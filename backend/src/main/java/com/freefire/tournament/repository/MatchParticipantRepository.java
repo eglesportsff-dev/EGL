@@ -18,9 +18,8 @@ public interface MatchParticipantRepository extends JpaRepository<MatchParticipa
             join fetch p.match m
             where p.user.id = :userId
               and m.active = true
-              and (m.matchTime is null or m.matchTime >= :now)
             order by m.matchTime asc
             """)
-    List<MatchParticipant> findUpcomingByUserId(@Param("userId") Long userId, @Param("now") Instant now);
+    List<MatchParticipant> findUpcomingByUserId(@Param("userId") Long userId);
     long countByMatchId(Long matchId);
 }

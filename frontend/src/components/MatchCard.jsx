@@ -17,12 +17,26 @@ export default function MatchCard({
   const seatsFull = Number(match.seatsLeft || 0) <= 0;
   const disabled = actionDisabled ?? (!match.registrationOpen || seatsFull);
   const usesWinnerOnly = match.gameType === 'CLASH_SQUAD' || match.gameType === 'LONE_WOLF';
+  const isLive = match.active && match.matchTime && new Date(match.matchTime) <= new Date();
 
   return (
     <article className="panel bg-gradient-to-br from-card to-bg">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-xs font-bold text-ember">{match.gameType.replaceAll('_', ' ')} - {match.variant.replaceAll('_', ' ')}</p>
+          <div className="flex items-center gap-2">
+            <p className="text-xs font-bold text-ember">{match.gameType.replaceAll('_', ' ')} - {match.variant.replaceAll('_', ' ')}</p>
+            {isLive && (
+              <span className="flex h-2 w-2 relative">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+              </span>
+            )}
+            {isLive && (
+              <span className="rounded bg-red-500/15 px-1.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-red-400">
+                Live
+              </span>
+            )}
+          </div>
           <h3 className="mt-1 text-lg font-black">{match.title}</h3>
           <p className="mt-1 text-sm text-slate-400">{when(match.matchTime)}</p>
           <p className="mt-2 text-xs uppercase tracking-[0.18em] text-slate-400">{match.teamOnly ? 'Team invite registration' : 'Open registration'}</p>

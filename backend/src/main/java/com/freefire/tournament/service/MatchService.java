@@ -70,7 +70,7 @@ public class MatchService {
 
     @Transactional(readOnly = true)
     public List<RegisteredMatchSummary> upcomingMatchesForUser(User user) {
-        return participants.findUpcomingByUserId(user.getId(), Instant.now()).stream()
+        return participants.findUpcomingByUserId(user.getId()).stream()
                 .map(MatchParticipant::getMatch)
                 .map(this::registeredSummary)
                 .toList();
