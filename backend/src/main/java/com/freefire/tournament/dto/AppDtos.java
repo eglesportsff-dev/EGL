@@ -73,7 +73,8 @@ public class AppDtos {
 
     public record MatchResultRequest(@NotBlank String firstUid,
                                      String secondUid,
-                                     String thirdUid) {}
+                                     String thirdUid,
+                                     String fourthUid) {}
 
     public record RoomDetailsRequest(@NotBlank @Size(max = 80) String roomId,
                                      @NotBlank @Size(max = 80) String roomPassword) {}

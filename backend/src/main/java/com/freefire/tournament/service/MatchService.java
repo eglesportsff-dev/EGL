@@ -647,18 +647,54 @@ public class MatchService {
         String winnerSummary;
 
         if (usesWinnerOnlyResult(match)) {
-            MatchParticipant first = participantByUid.get(request.firstUid());
-            if (first == null) {
-                throw new ApiException(HttpStatus.BAD_REQUEST, "Selected winner is not registered in this match");
+            int winnerCount = getWinnerCount(match);
+            java.util.List<String> winnerUids = new java.util.ArrayList<>();
+            if (winnerCount >= 1) {
+                if (request.firstUid() == null || request.firstUid().isBlank()) {
+                    throw new ApiException(HttpStatus.BAD_REQUEST, "Winner 1 is required");
+                }
+                winnerUids.add(request.firstUid());
             }
-            AwardTotals totals = awardPlacement(enrollments, first, match.getFirstReward(), match.getFirstReward(),
-                    "Congratulations! You won.",
-                    "Congratulations! You won and Rs " + match.getFirstReward() + " has been added to your wallet.");
-            rewardsUpdated = rewardsUpdated.add(totals.rewardsUpdated());
-            pointsUpdated = pointsUpdated.add(totals.pointsUpdated());
-            positionsUpdated += 1;
-            winnerSummary = "Winner: " + participantLabel(first);
-            Set<String> winningEntryKeys = Set.of(resultEntryKey(first));
+            if (winnerCount >= 2) {
+                if (request.secondUid() == null || request.secondUid().isBlank()) {
+                    throw new ApiException(HttpStatus.BAD_REQUEST, "Winner 2 is required");
+                }
+                winnerUids.add(request.secondUid());
+            }
+            if (winnerCount >= 4) {
+                if (request.thirdUid() == null || request.thirdUid().isBlank() ||
+                    request.fourthUid() == null || request.fourthUid().isBlank()) {
+                    throw new ApiException(HttpStatus.BAD_REQUEST, "Winner 3 and Winner 4 are required");
+                }
+                winnerUids.add(request.thirdUid());
+                winnerUids.add(request.fourthUid());
+            }
+
+            if (new java.util.HashSet<>(winnerUids).size() < winnerCount) {
+                throw new ApiException(HttpStatus.BAD_REQUEST, "Selected winners must be distinct");
+            }
+
+            java.util.List<MatchParticipant> winners = new java.util.ArrayList<>();
+            for (String uid : winnerUids) {
+                MatchParticipant p = participantByUid.get(uid);
+                if (p == null) {
+                    throw new ApiException(HttpStatus.BAD_REQUEST, "Selected winner is not registered in this match: " + uid);
+                }
+                winners.add(p);
+            }
+
+            for (MatchParticipant winner : winners) {
+                AwardTotals totals = awardPlacement(enrollments, winner, match.getFirstReward(), match.getFirstReward(),
+                        "Congratulations! You won.",
+                        "Congratulations! You won and Rs " + match.getFirstReward() + " has been added to your wallet.");
+                rewardsUpdated = rewardsUpdated.add(totals.rewardsUpdated());
+                pointsUpdated = pointsUpdated.add(totals.pointsUpdated());
+                positionsUpdated += 1;
+            }
+
+            winnerSummary = "Winners: " + winners.stream().map(this::participantLabel).collect(Collectors.joining(" | "));
+            Set<String> winningEntryKeys = winners.stream().map(this::resultEntryKey).collect(Collectors.toSet());
+
             enrollments.stream()
                     .filter(participant -> !winningEntryKeys.contains(resultEntryKey(participant)))
                     .map(MatchParticipant::getUser)
@@ -721,6 +757,13 @@ public class MatchService {
 
     private boolean usesWinnerOnlyResult(GameMatch match) {
         return match.getGameType() == GameType.CLASH_SQUAD || match.getGameType() == GameType.LONE_WOLF;
+    }
+
+    private int getWinnerCount(GameMatch match) {
+        if (match.isTeamOnly()) {
+            return 1;
+        }
+        return teamSize(match.getVariant());
     }
 
     private AwardTotals awardPlacement(List<MatchParticipant> enrollments, MatchParticipant selected,

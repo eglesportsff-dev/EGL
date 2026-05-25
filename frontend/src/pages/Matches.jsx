@@ -52,6 +52,29 @@ const getTeamSize = (variant) => {
 
 const usesWinnerOnlyResult = (match) => match?.gameType === 'CLASH_SQUAD' || match?.gameType === 'LONE_WOLF';
 
+const getWinnerOnlyPositions = (match) => {
+  if (!match) return [];
+  if (match.teamOnly) {
+    return [{ key: 'firstUid', label: 'Winner Team' }];
+  }
+  const size = getTeamSize(match.variant);
+  if (size === 2) {
+    return [
+      { key: 'firstUid', label: 'Winner 1' },
+      { key: 'secondUid', label: 'Winner 2' }
+    ];
+  }
+  if (size === 4) {
+    return [
+      { key: 'firstUid', label: 'Winner 1' },
+      { key: 'secondUid', label: 'Winner 2' },
+      { key: 'thirdUid', label: 'Winner 3' },
+      { key: 'fourthUid', label: 'Winner 4' }
+    ];
+  }
+  return [{ key: 'firstUid', label: 'Winner' }];
+};
+
 const toDateTimeLocal = (value) => {
   if (!value) return '';
   const date = new Date(value);
@@ -103,7 +126,7 @@ export default function Matches() {
   const [inviteNote, setInviteNote] = useState('');
   const [teamValidation, setTeamValidation] = useState(null);
   const [participants, setParticipants] = useState([]);
-  const [selectedPositions, setSelectedPositions] = useState({ firstUid: '', secondUid: '', thirdUid: '' });
+  const [selectedPositions, setSelectedPositions] = useState({ firstUid: '', secondUid: '', thirdUid: '', fourthUid: '' });
   const [roomDetails, setRoomDetails] = useState({ roomId: '', roomPassword: '' });
   const [roomMatchTime, setRoomMatchTime] = useState('');
   const [roomNotice, setRoomNotice] = useState('');
@@ -298,7 +321,7 @@ export default function Matches() {
   const openResultEditor = async (match) => {
     setSelectedResultMatch(match);
     setResultNotice('');
-    setSelectedPositions({ firstUid: '', secondUid: '', thirdUid: '' });
+    setSelectedPositions({ firstUid: '', secondUid: '', thirdUid: '', fourthUid: '' });
     setLoadingParticipants(true);
     try {
       const data = await getMatchParticipants(match.id);
@@ -336,7 +359,7 @@ export default function Matches() {
   const closeResultEditor = () => {
     setSelectedResultMatch(null);
     setParticipants([]);
-    setSelectedPositions({ firstUid: '', secondUid: '', thirdUid: '' });
+    setSelectedPositions({ firstUid: '', secondUid: '', thirdUid: '', fourthUid: '' });
     setResultNotice('');
   };
 
@@ -388,16 +411,31 @@ export default function Matches() {
   const submitResults = async () => {
     if (!selectedResultMatch) return;
     const winnerOnly = usesWinnerOnlyResult(selectedResultMatch);
-    if (!selectedPositions.firstUid || (!winnerOnly && (!selectedPositions.secondUid || !selectedPositions.thirdUid))) {
-      setResultNotice(winnerOnly ? 'Please select the winner before submitting.' : 'Please select first, second, and third places before submitting.');
+    
+    // Determine active positions that must be filled
+    const activePositions = winnerOnly
+      ? getWinnerOnlyPositions(selectedResultMatch)
+      : resultPositions;
+
+    const unfilled = activePositions.find(({ key }) => !selectedPositions[key]);
+    if (unfilled) {
+      setResultNotice(`Please select a player for ${unfilled.label} before submitting.`);
       return;
     }
+
     const resultPayload = winnerOnly
-      ? { ...selectedPositions, secondUid: '', thirdUid: '' }
+      ? {
+          firstUid: selectedPositions.firstUid || '',
+          secondUid: selectedPositions.secondUid || '',
+          thirdUid: selectedPositions.thirdUid || '',
+          fourthUid: selectedPositions.fourthUid || '',
+        }
       : selectedPositions;
-    const selectedPlayers = [resultPayload.firstUid, resultPayload.secondUid, resultPayload.thirdUid]
+
+    const selectedPlayers = [resultPayload.firstUid, resultPayload.secondUid, resultPayload.thirdUid, resultPayload.fourthUid]
       .filter(Boolean)
       .map((uid) => participantByUid.get(uid));
+      
     if (new Set(selectedPlayers.map(resultEntryKey)).size < selectedPlayers.length) {
       setResultNotice('One team or player can only be selected for one prize position.');
       return;
@@ -426,7 +464,7 @@ export default function Matches() {
   const queueDisplay = selectedMatchTeamSize > 1 && queueFilled === 0 && (selectedJoinMatch?.currentParticipants || 0) > 0
     ? selectedMatchTeamSize
     : queueFilled;
-  const activeResultPositions = usesWinnerOnlyResult(selectedResultMatch) ? winnerOnlyPositions : resultPositions;
+  const activeResultPositions = usesWinnerOnlyResult(selectedResultMatch) ? getWinnerOnlyPositions(selectedResultMatch) : resultPositions;
   const registeredRows = selectedParticipantsMatch ? participants.slice(participantsPage * 8, participantsPage * 8 + 8) : [];
   const registeredTotalPages = selectedParticipantsMatch ? Math.ceil(participants.length / 8) : 0;
 
