@@ -46,6 +46,7 @@ public class AdminService {
         jdbc.update("DELETE FROM team_invites WHERE inviter_id = ? OR invitee_id = ?", id, id);
         jdbc.update("DELETE FROM player_messages WHERE sender_id = ? OR recipient_id = ?", id, id);
         jdbc.update("DELETE FROM help_tickets WHERE user_id = ? OR reviewed_by_id = ?", id, id);
+        jdbc.update("DELETE FROM push_subscriptions WHERE user_id = ?", id);
         jdbc.update("DELETE FROM users WHERE id = ?", id);
     }
 
