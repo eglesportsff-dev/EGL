@@ -88,7 +88,18 @@ public class DashboardService {
             rewards = BigDecimal.ZERO;
         }
 
+        BigDecimal referralSignUpBonus = transactions.sumByType(TransactionType.REFERRAL_BONUS);
+        if (referralSignUpBonus == null) {
+            referralSignUpBonus = BigDecimal.ZERO;
+        }
+
+        BigDecimal referralAcquisitionRewards = transactions.sumByType(TransactionType.REFERRAL_REWARD);
+        if (referralAcquisitionRewards == null) {
+            referralAcquisitionRewards = BigDecimal.ZERO;
+        }
+
         return new DashboardStats(users.count(), controllers.countByActiveTrue(), masters.countByActiveTrue(),
-                matches.countByActiveTrue(), deposits, withdrawals, fees.subtract(rewards), rewards);
+                matches.countByActiveTrue(), deposits, withdrawals, fees.subtract(rewards), rewards,
+                referralSignUpBonus, referralAcquisitionRewards);
     }
 }

@@ -142,7 +142,8 @@ public class AppDtos {
 
     public record DashboardStats(long totalUsers, long totalControllers, long totalMasterControllers, long activeMatches,
                                  BigDecimal totalDeposits, BigDecimal totalWithdrawals, BigDecimal platformRevenue,
-                                 BigDecimal rewardDistribution) {}
+                                 BigDecimal rewardDistribution,
+                                 BigDecimal referralSignUpBonus, BigDecimal referralAcquisitionRewards) {}
 
     public record NotificationSummary(Long id, NotificationType type, String title, String message,
                                       boolean seen, Instant createdAt, Long referenceId) {}

@@ -12,7 +12,8 @@ public class AuthDtos {
             @NotBlank @Size(max = 5000000) String profileScreenshotUrl,
             @NotBlank @Size(min = 3, max = 80) String upiId,
             @Email @NotBlank String email,
-            @NotBlank @Size(min = 8, max = 80) String password
+            @NotBlank @Size(min = 8, max = 80) String password,
+            String referralCode
     ) {}
 
     public record VerifyOtpRequest(@Email @NotBlank String email, @NotBlank String otp) {}

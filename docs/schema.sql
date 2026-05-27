@@ -17,6 +17,8 @@ create table users (
   winning_points numeric(12,2) not null default 0,
   otp_hash varchar(255),
   otp_expires_at timestamptz,
+  referred_by_id bigint references users(id),
+  referral_paid boolean not null default false,
   created_at timestamptz not null default now()
 );
 

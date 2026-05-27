@@ -22,4 +22,7 @@ public interface MatchParticipantRepository extends JpaRepository<MatchParticipa
             """)
     List<MatchParticipant> findUpcomingByUserId(@Param("userId") Long userId);
     long countByMatchId(Long matchId);
+
+    @Query("SELECT COUNT(p) > 0 FROM MatchParticipant p WHERE p.user.id = :userId AND p.match.active = false")
+    boolean existsByUserIdAndMatchActiveFalse(@Param("userId") Long userId);
 }

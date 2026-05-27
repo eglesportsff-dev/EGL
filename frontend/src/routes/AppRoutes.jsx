@@ -33,6 +33,7 @@ const MasterControllers = lazy(() => import('../pages/MasterControllers.jsx'));
 const ActivePlayers = lazy(() => import('../pages/ActivePlayers.jsx'));
 const Messages = lazy(() => import('../pages/Messages.jsx'));
 const CommunityChat = lazy(() => import('../pages/CommunityChat.jsx'));
+const ReferEarn = lazy(() => import('../pages/ReferEarn.jsx'));
 
 export default function AppRoutes() {
   return (
@@ -55,6 +56,7 @@ export default function AppRoutes() {
           <Route path="/help" element={<HelpCenter />} />
           <Route path="/active-players" element={<ActivePlayers />} />
           <Route path="/messages" element={<Messages />} />
+          <Route path="/refer-earn" element={<ReferEarn />} />
         </Route>
       </Route>
       <Route element={<ProtectedRoute roles={['CONTROLLER']} loginRole="CONTROLLER" />}>

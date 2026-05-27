@@ -5,5 +5,7 @@ public enum TransactionType {
     ENTRY_FEE,
     REFUND,
     REWARD,
-    WITHDRAWAL
+    WITHDRAWAL,
+    REFERRAL_BONUS,
+    REFERRAL_REWARD
 }

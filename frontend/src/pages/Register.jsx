@@ -1,11 +1,12 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import Alert from '../components/Alert';
 import { register, verifyOtp } from '../services/authService';
 
 
 export default function Register() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [step, setStep] = useState('register');
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
@@ -15,10 +16,18 @@ export default function Register() {
     upiId: '',
     email: '',
     password: '',
+    referralCode: searchParams.get('ref') || '',
     otp: '',
   });
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    const ref = searchParams.get('ref');
+    if (ref) {
+      setForm((current) => ({ ...current, referralCode: ref }));
+    }
+  }, [searchParams]);
 
   const handlePhoto = (file) => {
     if (!file) return;
@@ -43,6 +52,7 @@ export default function Register() {
         upiId: form.upiId,
         email: form.email,
         password: form.password,
+        referralCode: form.referralCode || null,
       });
       setMessage(data.message);
       setStep('otp');
@@ -86,6 +96,7 @@ export default function Register() {
               <input className="input" placeholder="UPI ID" value={form.upiId} onChange={(e) => setForm({ ...form, upiId: e.target.value })} required disabled={loading} />
               <input className="input" type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required disabled={loading} />
               <input className="input" type="password" placeholder="Password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required disabled={loading} />
+              <input className="input" placeholder="Referral Code (Optional)" value={form.referralCode} onChange={(e) => setForm({ ...form, referralCode: e.target.value })} disabled={loading} />
             </>
           ) : (
             <input className="input" placeholder="6 digit OTP" value={form.otp} onChange={(e) => setForm({ ...form, otp: e.target.value })} required disabled={loading} />

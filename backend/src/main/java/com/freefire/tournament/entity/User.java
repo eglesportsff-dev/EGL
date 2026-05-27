@@ -42,6 +42,12 @@ public class User {
     private Instant createdAt = Instant.now();
     private Instant lastActivityAt;
 
+    @Column(name = "referred_by_id")
+    private Long referredById;
+
+    @Column(name = "referral_paid", nullable = false)
+    private boolean referralPaid = false;
+
     public Long getId() { return id; }
     public String getUid() { return uid; }
     public void setUid(String uid) { this.uid = uid; }
@@ -72,4 +78,9 @@ public class User {
     public Instant getCreatedAt() { return createdAt; }
     public Instant getLastActivityAt() { return lastActivityAt; }
     public void setLastActivityAt(Instant lastActivityAt) { this.lastActivityAt = lastActivityAt; }
+    
+    public Long getReferredById() { return referredById; }
+    public void setReferredById(Long referredById) { this.referredById = referredById; }
+    public boolean isReferralPaid() { return referralPaid; }
+    public void setReferralPaid(boolean referralPaid) { this.referralPaid = referralPaid; }
 }

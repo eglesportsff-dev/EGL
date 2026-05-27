@@ -9,12 +9,17 @@ import com.freefire.tournament.repository.PendingRegistrationRepository;
 import com.freefire.tournament.repository.UserRepository;
 import com.freefire.tournament.security.JwtService;
 import com.freefire.tournament.util.CodeGenerator;
+import com.freefire.tournament.entity.TransactionType;
+import com.freefire.tournament.entity.WalletTransaction;
+import com.freefire.tournament.entity.NotificationType;
+import com.freefire.tournament.repository.WalletTransactionRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 
 @Service
@@ -24,17 +29,22 @@ public class AuthService {
     private final PasswordEncoder encoder;
     private final EmailService emailService;
     private final JwtService jwtService;
+    private final WalletTransactionRepository transactions;
+    private final NotificationService notifications;
     private final long otpTtlMinutes;
 
     public AuthService(UserRepository users, PendingRegistrationRepository pendingRegistrations,
                        PasswordEncoder encoder, EmailService emailService,
-                       JwtService jwtService,
+                       JwtService jwtService, WalletTransactionRepository transactions,
+                       NotificationService notifications,
                        @Value("${app.otp.ttl-minutes}") long otpTtlMinutes) {
         this.users = users;
         this.pendingRegistrations = pendingRegistrations;
         this.encoder = encoder;
         this.emailService = emailService;
         this.jwtService = jwtService;
+        this.transactions = transactions;
+        this.notifications = notifications;
         this.otpTtlMinutes = otpTtlMinutes;
     }
 
@@ -69,6 +79,17 @@ public class AuthService {
         pending.setPasswordHash(encoder.encode(request.password()));
         pending.setOtpHash(otp); // Plain text storage for temporary OTP
         pending.setOtpExpiresAt(Instant.now().plusSeconds(otpTtlMinutes * 60));
+
+        // Check if referral code is provided
+        if (request.referralCode() != null && !request.referralCode().isBlank()) {
+            String refCode = request.referralCode().trim();
+            if (!users.findByUid(refCode).isPresent()) {
+                throw new ApiException(HttpStatus.BAD_REQUEST, "Invalid referral code");
+            }
+            pending.setReferralCode(refCode);
+        } else {
+            pending.setReferralCode(null);
+        }
         
         pendingRegistrations.save(pending);
         
@@ -106,7 +127,29 @@ public class AuthService {
         user.setPasswordHash(pending.getPasswordHash());
         user.setEmailVerified(true);
         
+        User referrer = null;
+        if (pending.getReferralCode() != null && !pending.getReferralCode().isBlank()) {
+            referrer = users.findByUid(pending.getReferralCode()).orElse(null);
+            if (referrer != null) {
+                user.setReferredById(referrer.getId());
+                user.setWalletBalance(BigDecimal.valueOf(5.00));
+            }
+        }
+
         users.save(user);
+
+        // Record signup bonus transaction if referred
+        if (referrer != null) {
+            WalletTransaction tx = new WalletTransaction();
+            tx.setUser(user);
+            tx.setType(TransactionType.REFERRAL_BONUS);
+            tx.setAmount(BigDecimal.valueOf(5.00));
+            tx.setNote("Referral sign-up bonus");
+            transactions.save(tx);
+
+            notifications.notifyUser(user, NotificationType.PAYMENT, "Sign-up Bonus Credited",
+                    "Rs 5.00 referral bonus has been added to your wallet.");
+        }
 
         // Delete the pending registration record
         pendingRegistrations.delete(pending);

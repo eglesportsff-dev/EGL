@@ -39,11 +39,12 @@ public class MatchService {
     private final TeamRepository teams;
     private final UserRepository users;
     private final NotificationService notifications;
+    private final WalletService walletService;
 
     public MatchService(MatchRepository matches, ControllerReviewRepository controllerReviews, WalletTransactionRepository transactions,
                         MatchParticipantRepository participants, TeamInviteRepository invites,
                         TeamMemberRepository teamMembers, TeamRepository teams,
-                        UserRepository users, NotificationService notifications) {
+                        UserRepository users, NotificationService notifications, WalletService walletService) {
         this.matches = matches;
         this.controllerReviews = controllerReviews;
         this.transactions = transactions;
@@ -53,6 +54,7 @@ public class MatchService {
         this.teams = teams;
         this.users = users;
         this.notifications = notifications;
+        this.walletService = walletService;
     }
 
     public List<MatchSummary> activeMatches(int limit) {
@@ -703,6 +705,14 @@ public class MatchService {
                             "You can be better next time."));
             match.setActive(false);
             recordReview(match, controller, winnerSummary, rewardsUpdated, pointsUpdated, positionsUpdated);
+            
+            for (MatchParticipant p : enrollments) {
+                try {
+                    walletService.checkAndProcessReferralReward(p.getUser());
+                } catch (Exception e) {
+                    log.error("Failed to process referral reward after match", e);
+                }
+            }
             return;
         }
 
@@ -753,6 +763,14 @@ public class MatchService {
 
         match.setActive(false);
         recordReview(match, controller, winnerSummary, rewardsUpdated, pointsUpdated, positionsUpdated);
+
+        for (MatchParticipant p : enrollments) {
+            try {
+                walletService.checkAndProcessReferralReward(p.getUser());
+            } catch (Exception e) {
+                log.error("Failed to process referral reward after match", e);
+            }
+        }
     }
 
     private boolean usesWinnerOnlyResult(GameMatch match) {
@@ -871,6 +889,11 @@ public class MatchService {
             user.setWinningPoints(user.getWinningPoints().add(winningPoints));
             teamMembers.findFirstByUserId(user.getId()).ifPresent(member ->
                     member.getTeam().setTotalWinningPoints(member.getTeam().getTotalWinningPoints().add(winningPoints)));
+        }
+        try {
+            walletService.checkAndProcessReferralReward(user);
+        } catch (Exception e) {
+            log.error("Failed to process referral reward after manual award", e);
         }
     }
 

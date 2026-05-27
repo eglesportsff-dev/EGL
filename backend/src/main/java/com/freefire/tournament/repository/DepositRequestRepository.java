@@ -13,5 +13,6 @@ public interface DepositRequestRepository extends JpaRepository<DepositRequest, 
     List<DepositRequest> findTop8ByUserIdOrderByCreatedAtDesc(Long userId);
     Page<DepositRequest> findByStatusOrderByCreatedAtAsc(RequestStatus status, Pageable pageable);
     boolean existsByUtrNumberAndStatusIn(String utrNumber, Collection<RequestStatus> statuses);
+    boolean existsByUserIdAndStatus(Long userId, RequestStatus status);
     long countByStatus(RequestStatus status);
 }

@@ -16,6 +16,7 @@ const nav = [
   ['Leaderboard', '/leaderboard'],
   ['Profile', '/profile'],
   ['Help Centre', '/help'],
+  ['Refer & Earn', '/refer-earn'],
 ];
 
 function BellIcon() {

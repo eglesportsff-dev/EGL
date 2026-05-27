@@ -43,6 +43,15 @@ export default function AdminPanel() {
         <StatCard label="Reward Distribution" value={money(stats?.rewardDistribution)} />
       </section>
 
+      <section className="panel bg-card border border-white/10 p-5 rounded-2xl space-y-4">
+        <h2 className="text-xl font-black text-white">Referral Costs & Program</h2>
+        <div className="grid gap-3 sm:grid-cols-3">
+          <StatCard label="Signup Referral Bonuses" value={money(stats?.referralSignUpBonus)} />
+          <StatCard label="Referrer Rewards Paid" value={money(stats?.referralAcquisitionRewards)} />
+          <StatCard label="Total Referral Expenses" value={money((stats?.referralSignUpBonus ?? 0) + (stats?.referralAcquisitionRewards ?? 0))} accent />
+        </div>
+      </section>
+
       <form className="panel grid gap-3 md:grid-cols-3" onSubmit={createMaster}>
         <h2 className="md:col-span-3 text-xl font-black">Create Master Controller</h2>
         <input className="input" placeholder="Username" value={staff.username} onChange={(e) => setStaff({ ...staff, username: e.target.value })} required />

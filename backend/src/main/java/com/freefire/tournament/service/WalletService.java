@@ -7,6 +7,7 @@ import com.freefire.tournament.repository.DepositRequestRepository;
 import com.freefire.tournament.repository.UserRepository;
 import com.freefire.tournament.repository.WalletTransactionRepository;
 import com.freefire.tournament.repository.WithdrawRequestRepository;
+import com.freefire.tournament.repository.MatchParticipantRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,15 +22,17 @@ public class WalletService {
     private final WalletTransactionRepository transactions;
     private final UserRepository users;
     private final NotificationService notifications;
+    private final MatchParticipantRepository participants;
 
     public WalletService(DepositRequestRepository deposits, WithdrawRequestRepository withdrawals,
                          WalletTransactionRepository transactions, UserRepository users,
-                         NotificationService notifications) {
+                         NotificationService notifications, MatchParticipantRepository participants) {
         this.deposits = deposits;
         this.withdrawals = withdrawals;
         this.transactions = transactions;
         this.users = users;
         this.notifications = notifications;
+        this.participants = participants;
     }
 
     @Transactional
@@ -54,6 +57,9 @@ public class WalletService {
     public void withdraw(WithdrawRequestDto request, User user) {
         if (!user.getUid().equals(request.userUid())) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "User UID does not match");
+        }
+        if (request.amount().compareTo(BigDecimal.valueOf(50.00)) < 0) {
+            throw new ApiException(HttpStatus.BAD_REQUEST, "Minimum withdrawal amount is Rs 50");
         }
         if (user.getWalletBalance().compareTo(request.amount()) < 0) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "Insufficient wallet balance");
@@ -91,6 +97,12 @@ public class WalletService {
         transactions.save(tx);
         notifications.notifyUser(user, NotificationType.PAYMENT, "Deposit approved",
                 amount(deposit.getAmount()) + " has been added to your wallet. " + deposit.getNote());
+        
+        try {
+            checkAndProcessReferralReward(user);
+        } catch (Exception e) {
+            System.err.println("Failed to process referral reward: " + e.getMessage());
+        }
     }
 
     @Transactional
@@ -171,5 +183,44 @@ public class WalletService {
 
     private String amount(BigDecimal value) {
         return "Rs " + value;
+    }
+
+    @Transactional
+    public void checkAndProcessReferralReward(User user) {
+        if (user == null || user.getReferredById() == null || user.isReferralPaid()) {
+            return;
+        }
+
+        // 1. Check if user has at least one approved deposit
+        boolean hasApprovedDeposit = deposits.existsByUserIdAndStatus(user.getId(), RequestStatus.APPROVED);
+        if (!hasApprovedDeposit) {
+            return;
+        }
+
+        // 2. Check if user has participated in at least one finished match (match.active = false)
+        boolean hasCompletedMatch = participants.existsByUserIdAndMatchActiveFalse(user.getId());
+        if (!hasCompletedMatch) {
+            return;
+        }
+
+        // Both conditions met! Let's award the referrer
+        User referrer = users.findById(user.getReferredById()).orElse(null);
+        if (referrer != null) {
+            referrer.setWalletBalance(referrer.getWalletBalance().add(BigDecimal.valueOf(8.00)));
+            users.save(referrer);
+
+            WalletTransaction tx = new WalletTransaction();
+            tx.setUser(referrer);
+            tx.setType(TransactionType.REFERRAL_REWARD);
+            tx.setAmount(BigDecimal.valueOf(8.00));
+            tx.setNote("Referral reward: " + user.getUsername() + " active");
+            transactions.save(tx);
+
+            notifications.notifyUser(referrer, NotificationType.PAYMENT, "Referral Reward Earned",
+                    "You have earned Rs 8.00 referral reward for referring " + user.getUsername() + " who completed a deposit and played their first match!");
+        }
+
+        user.setReferralPaid(true);
+        users.save(user);
     }
 }

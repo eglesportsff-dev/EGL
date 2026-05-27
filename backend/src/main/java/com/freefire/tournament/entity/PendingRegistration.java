@@ -38,6 +38,9 @@ public class PendingRegistration {
     @Column(nullable = false)
     private Instant createdAt = Instant.now();
 
+    @Column(name = "referral_code", length = 32)
+    private String referralCode;
+
     public Long getId() { return id; }
     
     public String getUsername() { return username; }
@@ -65,4 +68,7 @@ public class PendingRegistration {
     public void setOtpExpiresAt(Instant otpExpiresAt) { this.otpExpiresAt = otpExpiresAt; }
     
     public Instant getCreatedAt() { return createdAt; }
+
+    public String getReferralCode() { return referralCode; }
+    public void setReferralCode(String referralCode) { this.referralCode = referralCode; }
 }

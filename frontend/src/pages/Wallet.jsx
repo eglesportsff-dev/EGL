@@ -64,7 +64,7 @@ export default function Wallet() {
         <input className="input" placeholder="UPI ID" value={wd.upiId} onChange={(e) => setWd({ ...wd, upiId: e.target.value })} required />
         <input className="input" placeholder="User UID" value={wd.userUid} readOnly />
         <input className="input" value={profile?.username || user?.username || ''} readOnly />
-        <input className="input" type="number" min="1" placeholder="Withdrawal amount" value={wd.amount} onChange={(e) => setWd({ ...wd, amount: e.target.value })} required />
+        <input className="input" type="number" min="50" placeholder="Withdrawal amount (min ₹50)" value={wd.amount} onChange={(e) => setWd({ ...wd, amount: e.target.value })} required />
         <button className="btn-primary w-full">Submit Withdrawal</button>
       </form>
       <div className="md:col-span-2"><Alert>{message}</Alert></div>
