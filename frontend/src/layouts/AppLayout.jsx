@@ -55,11 +55,11 @@ export default function AppLayout() {
   const [messageUnreadCount, setMessageUnreadCount] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const visibleNav = user?.role === 'ADMIN'
-    ? [['Players', '/admin/players'], ['Controllers', '/admin/controllers'], ['Master Controllers', '/admin/masters'], ['Admin', '/admin']]
+    ? [['Players', '/admin/players'], ['Controllers', '/admin/controllers'], ['Master Controllers', '/admin/masters'], ['Community Chat', '/community-chat'], ['Admin', '/admin']]
     : user?.role === 'MASTER_CONTROLLER'
-      ? [['Controllers', '/master/controllers'], ['Matches', '/master/matches'], ['Pending Deposits', '/master/deposits'], ['Pending Withdraws', '/master/withdraws'], ['Help Centre', '/master/help'], ['Master', '/master']]
+      ? [['Controllers', '/master/controllers'], ['Matches', '/master/matches'], ['Pending Deposits', '/master/deposits'], ['Pending Withdraws', '/master/withdraws'], ['Community Chat', '/community-chat'], ['Help Centre', '/master/help'], ['Master', '/master']]
       : user?.role === 'CONTROLLER'
-        ? [['Matches', '/matches'], ['Control', '/controller'], ['Pending Review', '/controller/reviews/pending'], ["Today's Reviewed", '/controller/reviews/today'], ['Total Reviews', '/controller/reviews/total']]
+        ? [['Matches', '/matches'], ['Control', '/controller'], ['Pending Review', '/controller/reviews/pending'], ["Today's Reviewed", '/controller/reviews/today'], ['Total Reviews', '/controller/reviews/total'], ['Community Chat', '/community-chat']]
     : nav;
 
   useEffect(() => {
