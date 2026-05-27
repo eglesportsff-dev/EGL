@@ -32,6 +32,7 @@ const MasterMatches = lazy(() => import('../pages/MasterMatches.jsx'));
 const MasterControllers = lazy(() => import('../pages/MasterControllers.jsx'));
 const ActivePlayers = lazy(() => import('../pages/ActivePlayers.jsx'));
 const Messages = lazy(() => import('../pages/Messages.jsx'));
+const CommunityChat = lazy(() => import('../pages/CommunityChat.jsx'));
 
 export default function AppRoutes() {
   return (
@@ -45,6 +46,7 @@ export default function AppRoutes() {
           <Route path="/matches" element={<Matches />} />
           <Route path="/upcoming-matches" element={<UpcomingMatches />} />
           <Route path="/matching-friends" element={<MatchingFriends />} />
+          <Route path="/community-chat" element={<CommunityChat />} />
           <Route path="/wallet" element={<Wallet />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/leaderboard" element={<Leaderboard />} />

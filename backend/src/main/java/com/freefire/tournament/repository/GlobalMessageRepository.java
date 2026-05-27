@@ -15,10 +15,10 @@ import java.util.List;
 @Repository
 public interface GlobalMessageRepository extends JpaRepository<GlobalMessage, Long> {
     @Query("SELECT gm FROM GlobalMessage gm WHERE gm.user.role = :role ORDER BY gm.createdAt DESC")
-    List<GlobalMessage> findByRoleOrderByCreatedAtDesc(@Param("role") Role role, Pageable pageable);
+    List<GlobalMessage> findRecentPlayerMessages(@Param("role") Role role, Pageable pageable);
 
     @Query("SELECT gm FROM GlobalMessage gm WHERE gm.user.role IN (:roles) AND gm.createdAt > :since ORDER BY gm.createdAt DESC")
-    List<GlobalMessage> findByRolesAndCreatedAtAfterOrderByCreatedAtDesc(
+    List<GlobalMessage> findRecentStaffMessages(
             @Param("roles") List<Role> roles, @Param("since") Instant since);
 
     @Modifying

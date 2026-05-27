@@ -9,6 +9,7 @@ const nav = [
   ['Matches', '/matches'],
   ['Upcoming Matches', '/upcoming-matches'],
   ['Matching Friends', '/matching-friends'],
+  ['Community Chat', '/community-chat'],
   ['Active Players', '/active-players'],
   ['Messages', '/messages'],
   ['Wallet', '/wallet'],

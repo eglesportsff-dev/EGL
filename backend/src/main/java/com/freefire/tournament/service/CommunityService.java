@@ -45,6 +45,11 @@ public class CommunityService {
             throw new ApiException(HttpStatus.BAD_REQUEST, "Message content is too long");
         }
 
+        // EMOJI CHECK: Players cannot use emojis, staff can
+        if (sender.getRole() == Role.USER && containsEmoji(content)) {
+            throw new ApiException(HttpStatus.BAD_REQUEST, "Players are not allowed to use emojis in community chat");
+        }
+
         GlobalMessage message = new GlobalMessage();
         message.setUser(sender);
         message.setContent(content.trim());
@@ -64,12 +69,12 @@ public class CommunityService {
     @Transactional(readOnly = true)
     public List<GlobalMessageRow> getGlobalMessages() {
         // 1. Get the last 10 player messages
-        List<GlobalMessage> playersMsgs = globalMessages.findByRoleOrderByCreatedAtDesc(
+        List<GlobalMessage> playersMsgs = globalMessages.findRecentPlayerMessages(
                 Role.USER, PageRequest.of(0, 10));
 
         // 2. Get all staff messages from the last 24 hours
         Instant since24h = Instant.now().minusSeconds(24 * 60 * 60);
-        List<GlobalMessage> staffMsgs = globalMessages.findByRolesAndCreatedAtAfterOrderByCreatedAtDesc(
+        List<GlobalMessage> staffMsgs = globalMessages.findRecentStaffMessages(
                 List.of(Role.ADMIN, Role.CONTROLLER, Role.MASTER_CONTROLLER), since24h);
 
         // 3. Merge and sort chronologically (oldest first) for the chat room view
@@ -109,7 +114,7 @@ public class CommunityService {
     @Transactional
     public void pruneMessages() {
         // 1. Find the 10th player message's timestamp to prune older ones
-        List<GlobalMessage> playersMsgs = globalMessages.findByRoleOrderByCreatedAtDesc(
+        List<GlobalMessage> playersMsgs = globalMessages.findRecentPlayerMessages(
                 Role.USER, PageRequest.of(0, 10));
         if (playersMsgs.size() >= 10) {
             Instant oldestAllowedPlayerTime = playersMsgs.get(playersMsgs.size() - 1).getCreatedAt();
@@ -220,5 +225,12 @@ public class CommunityService {
         polls.save(poll);
 
         return new MessageResponse("Poll closed successfully");
+    }
+
+    private boolean containsEmoji(String text) {
+        return text.codePoints().anyMatch(cp -> 
+            (cp >= 0x1F300 && cp <= 0x1F9FF) || 
+            (cp >= 0x2600 && cp <= 0x27BF)
+        );
     }
 }
