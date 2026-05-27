@@ -49,8 +49,6 @@ public class PlayerService {
             Role.USER,
             excludeId,
             normalizedSearch,
-            oneWeekAgo,
-            oneMonthAgo,
             PageRequest.of(page, size)
         );
         

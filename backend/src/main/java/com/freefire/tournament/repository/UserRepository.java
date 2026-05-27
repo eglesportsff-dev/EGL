@@ -24,15 +24,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE u.role = :role AND u.id <> :excludeId " +
            "AND (:search = '' OR LOWER(u.username) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(u.gameUid) LIKE LOWER(CONCAT('%', :search, '%'))) " +
-           "ORDER BY " +
-           "CASE WHEN u.lastActivityAt > :oneWeekAgo THEN 0 " +
-           "     WHEN u.lastActivityAt > :oneMonthAgo THEN 1 " +
-           "     ELSE 2 END ASC, " +
-           "u.lastActivityAt DESC NULLS LAST")
+           "ORDER BY u.lastActivityAt DESC NULLS LAST")
     Page<User> findPlayers(@Param("role") Role role, 
                           @Param("excludeId") Long excludeId, 
                           @Param("search") String search, 
-                          @Param("oneWeekAgo") Instant oneWeekAgo, 
-                          @Param("oneMonthAgo") Instant oneMonthAgo, 
                           Pageable pageable);
 }
