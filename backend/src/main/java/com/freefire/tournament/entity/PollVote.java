@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "poll_votes", uniqueConstraints = {
-        @UniqueConstraint(name = "uc_poll_user", columnList = "poll_id, user_id")
+        @UniqueConstraint(name = "uc_poll_user", columnNames = {"poll_id", "user_id"})
 })
 public class PollVote {
     @Id
