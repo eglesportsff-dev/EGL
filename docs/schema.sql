@@ -156,3 +156,18 @@ create index idx_deposit_status on deposit_requests(status);
 create index idx_withdraw_status on withdraw_requests(status);
 create index idx_notifications_user_created on user_notifications(user_id, created_at desc);
 create index idx_notifications_user_seen on user_notifications(user_id, seen);
+
+-- Enable Row Level Security (RLS) on all tables to protect against unauthorized public PostgREST API access
+alter table users enable row level security;
+alter table teams enable row level security;
+alter table team_members enable row level security;
+alter table matches enable row level security;
+alter table match_participants enable row level security;
+alter table team_invites enable row level security;
+alter table wallet_transactions enable row level security;
+alter table deposit_requests enable row level security;
+alter table withdraw_requests enable row level security;
+alter table tournament_updates enable row level security;
+alter table user_notifications enable row level security;
+alter table controllers enable row level security;
+alter table master_controllers enable row level security;

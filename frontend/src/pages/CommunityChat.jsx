@@ -20,7 +20,7 @@ export default function CommunityChat() {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [chatSending, setChatSending] = useState(false);
-  const chatEndRef = useRef(null);
+  const chatContainerRef = useRef(null);
 
   // Polls States
   const [polls, setPolls] = useState([]);
@@ -80,7 +80,12 @@ export default function CommunityChat() {
 
   // Scroll to bottom when messages update
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
   }, [messages]);
 
   const handleSendChatMessage = async (e) => {
@@ -207,14 +212,12 @@ export default function CommunityChat() {
 
       {alert && <Alert type="error">{alert}</Alert>}
 
-      <div className="grid gap-5 md:grid-cols-[1fr_20rem] items-start">
-        {/* CHAT BOX CONTAINER */}
-        <div className="panel border border-white/10 bg-card flex flex-col h-[550px] relative">
-          
-          {/* Header containing title and Staff Poll Creator trigger */}
+      <div className="flex flex-col gap-5">
+        {/* POLLS SECTION (ON TOP) */}
+        <div className="panel border border-white/10 bg-card space-y-4 h-[280px] flex flex-col">
           <div className="flex justify-between items-center pb-3 border-b border-white/10">
             <h2 className="font-black text-white flex items-center gap-2">
-              <span className="text-emerald-500">💬</span> Global Community Lobby
+              <span className="text-gold">🗳️</span> Community Polls
             </h2>
             {isStaff && (
               <button
@@ -229,88 +232,6 @@ export default function CommunityChat() {
               </button>
             )}
           </div>
-
-          {/* Chat Messages list (WhatsApp Style) */}
-          <div className="flex-1 overflow-y-auto py-4 space-y-3 px-1">
-            {messages.map((msg) => {
-              const isMe = msg.senderId === user?.id;
-              const isMsgStaff = msg.senderStatus === 'ADMIN' || msg.senderStatus === 'CONTROLLER' || msg.senderStatus === 'MASTER_CONTROLLER';
-
-              return (
-                <div key={msg.id} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
-                  <div 
-                    className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm border relative shadow-md ${
-                      isMe 
-                        ? 'bg-emerald-500/15 border-emerald-500/20 text-white rounded-tr-none' 
-                        : isMsgStaff 
-                          ? 'bg-gold/10 border-gold/25 text-white rounded-tl-none' 
-                          : 'bg-white/5 border-white/10 text-slate-200 rounded-tl-none'
-                    }`}
-                  >
-                    {/* Username (clickable) */}
-                    {!isMe && (
-                      <button
-                        onClick={() => setSelectedPlayer({
-                          userId: msg.senderId,
-                          username: msg.senderUsername,
-                          gameUid: msg.senderGameUid,
-                          profileScreenshotUrl: msg.senderProfileScreenshotUrl,
-                          winningPoints: msg.senderWinningPoints,
-                          status: msg.senderStatus
-                        })}
-                        className={`text-xs font-black block hover:underline text-left pb-1 mb-0.5 ${
-                          isMsgStaff ? 'text-gold' : 'text-primary'
-                        }`}
-                      >
-                        {msg.senderUsername}
-                        {isMsgStaff && <span className="text-[9px] text-gold/80 ml-1 font-semibold uppercase">Staff</span>}
-                        {msg.senderGameUid && !isMsgStaff && (
-                          <span className="font-normal text-secondary text-[10px] ml-1.5">
-                            (UID: {msg.senderGameUid})
-                          </span>
-                        )}
-                      </button>
-                    )}
-
-                    <p className="leading-relaxed break-words">{msg.content}</p>
-
-                    <div className="flex items-center justify-end gap-1.5 mt-1 text-[9px] text-slate-500">
-                      <span>{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                      {isMe && <span className="text-emerald-500 font-bold">✓</span>}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-            <div ref={chatEndRef} />
-          </div>
-
-          {/* Form to submit messages */}
-          <form onSubmit={handleSendChatMessage} className="border-t border-white/10 pt-3 flex gap-2">
-            <input
-              type="text"
-              placeholder={user?.role === 'USER' ? "Send message (no emojis)..." : "Send message..."}
-              className="input flex-1 text-sm bg-arena border-white/10"
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              maxLength={1000}
-              disabled={chatSending}
-            />
-            <button
-              type="submit"
-              className="btn-primary py-2 px-4 font-bold text-sm"
-              disabled={chatSending || !newMessage.trim()}
-            >
-              {chatSending ? '...' : 'Send'}
-            </button>
-          </form>
-        </div>
-
-        {/* POLLS COLUMN */}
-        <div className="panel border border-white/10 bg-card space-y-4 h-[550px] flex flex-col">
-          <h2 className="font-black text-white pb-3 border-b border-white/10 flex items-center gap-2">
-            <span className="text-gold">🗳️</span> Community Polls
-          </h2>
 
           <div className="flex-1 overflow-y-auto space-y-4 pr-1">
             {polls.map((poll) => {
@@ -377,6 +298,91 @@ export default function CommunityChat() {
               <p className="text-xs text-secondary text-center py-5">No active polls running.</p>
             )}
           </div>
+        </div>
+
+        {/* CHAT BOX CONTAINER (ON BOTTOM) */}
+        <div className="panel border border-white/10 bg-card flex flex-col h-[480px] relative">
+          
+          {/* Header containing title */}
+          <div className="flex justify-between items-center pb-3 border-b border-white/10">
+            <h2 className="font-black text-white flex items-center gap-2">
+              <span className="text-emerald-500">💬</span> Global Community Lobby
+            </h2>
+          </div>
+
+          {/* Chat Messages list (WhatsApp Style) */}
+          <div ref={chatContainerRef} className="flex-1 overflow-y-auto py-4 space-y-3 px-1">
+            {messages.map((msg) => {
+              const isMe = msg.senderId === user?.id;
+              const isMsgStaff = msg.senderStatus === 'ADMIN' || msg.senderStatus === 'CONTROLLER' || msg.senderStatus === 'MASTER_CONTROLLER';
+
+              return (
+                <div key={msg.id} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
+                  <div 
+                    className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm border relative shadow-md ${
+                      isMe 
+                        ? 'bg-emerald-500/15 border-emerald-500/20 text-white rounded-tr-none' 
+                        : isMsgStaff 
+                          ? 'bg-gold/10 border-gold/25 text-white rounded-tl-none' 
+                          : 'bg-white/5 border-white/10 text-slate-200 rounded-tl-none'
+                    }`}
+                  >
+                    {/* Username (clickable) */}
+                    {!isMe && (
+                      <button
+                        onClick={() => setSelectedPlayer({
+                          userId: msg.senderId,
+                          username: msg.senderUsername,
+                          gameUid: msg.senderGameUid,
+                          profileScreenshotUrl: msg.senderProfileScreenshotUrl,
+                          winningPoints: msg.senderWinningPoints,
+                          status: msg.senderStatus
+                        })}
+                        className={`text-xs font-black block hover:underline text-left pb-1 mb-0.5 ${
+                          isMsgStaff ? 'text-gold' : 'text-primary'
+                        }`}
+                      >
+                        {msg.senderUsername}
+                        {isMsgStaff && <span className="text-[9px] text-gold/80 ml-1 font-semibold uppercase">Staff</span>}
+                        {msg.senderGameUid && !isMsgStaff && (
+                          <span className="font-normal text-secondary text-[10px] ml-1.5">
+                            (UID: {msg.senderGameUid})
+                          </span>
+                        )}
+                      </button>
+                    )}
+
+                    <p className="leading-relaxed break-words">{msg.content}</p>
+
+                    <div className="flex items-center justify-end gap-1.5 mt-1 text-[9px] text-slate-500">
+                      <span>{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                      {isMe && <span className="text-emerald-500 font-bold">✓</span>}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Form to submit messages */}
+          <form onSubmit={handleSendChatMessage} className="border-t border-white/10 pt-3 flex gap-2">
+            <input
+              type="text"
+              placeholder={user?.role === 'USER' ? "Send message (no emojis)..." : "Send message..."}
+              className="input flex-1 text-sm bg-arena border-white/10"
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              maxLength={1000}
+              disabled={chatSending}
+            />
+            <button
+              type="submit"
+              className="btn-primary py-2 px-4 font-bold text-sm"
+              disabled={chatSending || !newMessage.trim()}
+            >
+              {chatSending ? '...' : 'Send'}
+            </button>
+          </form>
         </div>
       </div>
 
