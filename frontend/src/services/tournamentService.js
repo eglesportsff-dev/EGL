@@ -73,3 +73,11 @@ export const getMessages = (userId) => api.get(`/players/messages/${userId}`).th
 export const deleteConversation = (userId) => api.delete(`/players/messages/${userId}`).then((r) => r.data);
 export const markMessagesRead = (userId) => api.post(`/players/messages/${userId}/read`).then((r) => r.data);
 export const getConversations = () => api.get('/players/conversations').then((r) => r.data);
+
+export const getGlobalMessages = () => api.get('/community/messages').then((r) => r.data);
+export const sendGlobalMessage = (content) => api.post('/community/messages/send', content, { headers: { 'Content-Type': 'text/plain' } }).then((r) => r.data);
+export const getPolls = () => api.get('/community/polls').then((r) => r.data);
+export const createPoll = (payload) => api.post('/community/polls/create', payload).then((r) => r.data);
+export const voteInPoll = (pollId, optionId) => api.post(`/community/polls/${pollId}/vote?optionId=${optionId}`).then((r) => r.data);
+export const closePoll = (pollId) => api.post(`/community/polls/${pollId}/close`).then((r) => r.data);
+

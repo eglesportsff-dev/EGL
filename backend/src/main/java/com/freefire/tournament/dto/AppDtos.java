@@ -186,4 +186,15 @@ public class AppDtos {
 
     public record PushSubscriptionRequest(String endpoint, String p256dh, String auth) {}
     public record VapidPublicKeyResponse(String publicKey) {}
+
+    public record GlobalMessageRow(Long id, Long senderId, String senderUsername, String senderGameUid,
+                                   String senderProfileScreenshotUrl, BigDecimal senderWinningPoints,
+                                   String senderStatus, String content, Instant createdAt) {}
+
+    public record PollOptionDto(Long id, String optionText, long votesCount) {}
+
+    public record PollDto(Long id, String question, String createdByUsername, Instant createdAt,
+                          boolean active, List<PollOptionDto> options, Long userVotedOptionId) {}
+
+    public record CreatePollRequest(@NotBlank String question, @NotEmpty List<String> options) {}
 }
