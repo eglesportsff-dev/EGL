@@ -78,12 +78,12 @@ public class MatchService {
 
     public List<MasterMatchRow> masterMatches(String status) {
         Instant now = Instant.now();
-        return matches.findAll().stream()
-                .filter(match -> switch (status == null ? "live" : status) {
-                    case "history" -> !match.isActive() || (match.getMatchTime() != null && match.getMatchTime().isBefore(now));
-                    case "upcoming" -> match.isActive() && (match.getMatchTime() == null || match.getMatchTime().isAfter(now));
-                    default -> match.isActive() && (match.getMatchTime() == null || match.getMatchTime().isBefore(now.plusSeconds(86400)));
-                })
+        List<GameMatch> matchList = switch (status == null ? "live" : status) {
+            case "history" -> matches.findHistoryMatches(now);
+            case "upcoming" -> matches.findUpcomingMatches(now);
+            default -> matches.findLiveMatches(now.plusSeconds(86400));
+        };
+        return matchList.stream()
                 .map(this::masterRow)
                 .toList();
     }

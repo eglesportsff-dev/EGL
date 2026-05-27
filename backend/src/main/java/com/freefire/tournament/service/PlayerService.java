@@ -4,10 +4,13 @@ import com.freefire.tournament.dto.AppDtos.*;
 import com.freefire.tournament.dto.AuthDtos.MessageResponse;
 import com.freefire.tournament.entity.NotificationType;
 import com.freefire.tournament.entity.PlayerMessage;
+import com.freefire.tournament.entity.Role;
 import com.freefire.tournament.entity.User;
 import com.freefire.tournament.exception.ApiException;
 import com.freefire.tournament.repository.PlayerMessageRepository;
 import com.freefire.tournament.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,41 +41,33 @@ public class PlayerService {
     @Transactional(readOnly = true)
     public List<ActivePlayerRow> getActivePlayers(int page, int size, String search, User loggedInUser) {
         Instant oneWeekAgo = Instant.now().minusSeconds(7 * 24 * 60 * 60);
-        String normalizedSearch = search == null ? "" : search.trim().toLowerCase(Locale.ROOT);
+        Instant oneMonthAgo = Instant.now().minusSeconds(30 * 24 * 60 * 60);
+        String normalizedSearch = search == null ? "" : search.trim();
+        Long excludeId = loggedInUser != null ? loggedInUser.getId() : -1L;
         
-        // Get all users
-        List<User> allUsers = users.findAll();
+        Page<User> playerPage = users.findPlayers(
+            Role.USER,
+            excludeId,
+            normalizedSearch,
+            oneWeekAgo,
+            oneMonthAgo,
+            PageRequest.of(page, size)
+        );
         
-        return allUsers.stream()
-            .filter(u -> u.getRole().name().equals("USER"))
-            .filter(u -> loggedInUser == null || !u.getId().equals(loggedInUser.getId()))
-            .filter(u -> matchesSearch(u, normalizedSearch))
+        return playerPage.stream()
             .map(u -> {
                 String status;
                 if (u.getLastActivityAt() != null && u.getLastActivityAt().isAfter(oneWeekAgo)) {
                     status = "ACTIVE";
-                } else if (u.getLastActivityAt() != null && u.getLastActivityAt().isAfter(Instant.now().minusSeconds(30 * 24 * 60 * 60))) {
+                } else if (u.getLastActivityAt() != null && u.getLastActivityAt().isAfter(oneMonthAgo)) {
                     status = "RECENT";
                 } else {
                     status = "INACTIVE";
                 }
                 return new ActivePlayerRow(u.getId(), u.getUsername(), u.getGameUid(), 
-                                          u.getProfileScreenshotUrl(), u.getWinningPoints(), 
-                                          status, u.getLastActivityAt());
+                                           u.getProfileScreenshotUrl(), u.getWinningPoints(), 
+                                           status, u.getLastActivityAt());
             })
-            .sorted((p1, p2) -> {
-                // Active first, then recent, then inactive
-                int statusCompare = statusPriority(p1.status()) - statusPriority(p2.status());
-                if (statusCompare != 0) return statusCompare;
-                
-                // Within same status, sort by last activity descending
-                if (p1.lastActivityAt() != null && p2.lastActivityAt() != null) {
-                    return p2.lastActivityAt().compareTo(p1.lastActivityAt());
-                }
-                return 0;
-            })
-            .skip((long) page * size)
-            .limit(size)
             .toList();
     }
 
@@ -177,6 +172,8 @@ public class PlayerService {
         List<PlayerMessage> received = messages.findByRecipientIdOrderByCreatedAtDesc(currentUser.getId());
         List<PlayerMessage> sent = messages.findBySenderIdOrderByCreatedAtDesc(currentUser.getId());
 
+        List<PlayerMessage> allMsgs = Stream.concat(received.stream(), sent.stream()).toList();
+
         Map<Long, User> uniqueParticipants = Stream.concat(
                     received.stream().map(PlayerMessage::getSender),
                     sent.stream().map(PlayerMessage::getRecipient)
@@ -185,9 +182,13 @@ public class PlayerService {
 
         return uniqueParticipants.values().stream()
                 .map(user -> {
-                    PlayerMessage lastMsg = messages.findConversation(currentUser.getId(), user.getId())
-                            .stream().findFirst().orElse(null);
-                    boolean hasUnread = messages.countByRecipientIdAndSenderIdAndReadFalse(currentUser.getId(), user.getId()) > 0;
+                    PlayerMessage lastMsg = allMsgs.stream()
+                            .filter(m -> m.getSender().getId().equals(user.getId()) || m.getRecipient().getId().equals(user.getId()))
+                            .max(Comparator.comparing(PlayerMessage::getCreatedAt))
+                            .orElse(null);
+
+                    boolean hasUnread = received.stream()
+                            .anyMatch(m -> m.getSender().getId().equals(user.getId()) && !m.isRead());
 
                     return new MessageConversationRow(
                         user.getId(),
