@@ -79,11 +79,10 @@ export default function Dashboard() {
             href={part}
             target="_blank"
             rel="noopener noreferrer"
-            className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-0.5 text-xs font-bold transition ml-1 my-0.5 ${
-              isWhatsApp
+            className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-0.5 text-xs font-bold transition ml-1 my-0.5 ${isWhatsApp
                 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/30'
                 : 'bg-fire-500/20 text-fire-300 border border-fire-500/40 hover:bg-fire-500/30'
-            }`}
+              }`}
           >
             {isWhatsApp && <span className="text-emerald-400">📱</span>}
             <span>{isWhatsApp ? 'Join WhatsApp Channel' : 'Visit Link'}</span>
@@ -254,11 +253,10 @@ export default function Dashboard() {
           </div>
           <div className="mt-3 flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-black ${
-                data.qualificationStatus === 'Q'
+              <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-black ${data.qualificationStatus === 'Q'
                   ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-glow'
                   : 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
-              }`}>
+                }`}>
                 {data.qualificationStatus === 'Q' ? 'QUALIFIED (Q) 🏆' : 'CONTENDER (NQ)'}
               </span>
             </div>
@@ -444,9 +442,8 @@ export default function Dashboard() {
                   className="flex items-center justify-between gap-3 rounded-xl border border-white/5 bg-[#080D1A]/80 p-3 text-sm transition hover:border-white/15"
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
-                    <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
-                      isDebit ? 'bg-red-500/15 text-red-400' : 'bg-emerald-500/15 text-emerald-400'
-                    }`}>
+                    <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${isDebit ? 'bg-red-500/15 text-red-400' : 'bg-emerald-500/15 text-emerald-400'
+                      }`}>
                       {isDebit ? <ArrowDownLeft className="h-4 w-4" /> : <ArrowUpRight className="h-4 w-4" />}
                     </div>
                     <div className="min-w-0">
@@ -456,9 +453,8 @@ export default function Dashboard() {
                       )}
                     </div>
                   </div>
-                  <b className={`font-mono font-black text-xs sm:text-sm shrink-0 ${
-                    isDebit ? 'text-red-400' : 'text-emerald-400'
-                  }`}>
+                  <b className={`font-mono font-black text-xs sm:text-sm shrink-0 ${isDebit ? 'text-red-400' : 'text-emerald-400'
+                    }`}>
                     {isDebit ? '-' : '+'}{money(Math.abs(tx.amount))}
                   </b>
                 </div>
@@ -547,15 +543,14 @@ export default function Dashboard() {
                     <span className="font-black text-white text-base">{item.type}</span>
                     <span className="font-mono font-bold text-amber-400">{money(item.amount)}</span>
                   </div>
-                  <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold ${
-                    isRejected
+                  <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold ${isRejected
                       ? 'bg-red-500/15 text-red-300 border border-red-500/30'
                       : isApproved
-                      ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
-                      : isForwarded
-                      ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/30'
-                      : 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
-                  }`}>
+                        ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
+                        : isForwarded
+                          ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/30'
+                          : 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
+                    }`}>
                     {isApproved && <CheckCircle2 className="h-3 w-3" />}
                     {isRejected && <XCircle className="h-3 w-3" />}
                     {!isApproved && !isRejected && <Clock className="h-3 w-3" />}

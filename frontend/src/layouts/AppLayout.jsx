@@ -105,7 +105,7 @@ export default function AppLayout() {
       ? [['Controllers', '/master/controllers'], ['Matches', '/master/matches'], ['Pending Deposits', '/master/deposits'], ['Pending Withdraws', '/master/withdraws'], ['Community Chat', '/community-chat'], ['Help Centre', '/master/help'], ['Master', '/master']]
       : user?.role === 'CONTROLLER'
         ? [['Matches', '/matches'], ['Control', '/controller'], ['Pending Review', '/controller/reviews/pending'], ["Today's Reviewed", '/controller/reviews/today'], ['Total Reviews', '/controller/reviews/total'], ['Community Chat', '/community-chat']]
-    : nav;
+        : nav;
 
   useEffect(() => {
     const loadUnread = () => {
@@ -142,7 +142,7 @@ export default function AppLayout() {
 
   useEffect(() => {
     if (user?.role !== 'USER') return;
-    
+
     const updateActivity = () => {
       sessionStorage.setItem('lastActivity', new Date().toISOString());
     };
@@ -150,7 +150,7 @@ export default function AppLayout() {
     const interval = setInterval(updateActivity, 30000);
     window.addEventListener('mousemove', updateActivity);
     window.addEventListener('keypress', updateActivity);
-    
+
     return () => {
       clearInterval(interval);
       window.removeEventListener('mousemove', updateActivity);
@@ -192,11 +192,10 @@ export default function AppLayout() {
               key={`${label}-${index}`}
               to={to}
               onClick={() => setSidebarOpen(false)}
-              className={({ isActive }) => `group relative flex items-center gap-3 rounded-xl px-3.5 py-2.5 font-semibold transition-all duration-200 ${
-                isActive
+              className={({ isActive }) => `group relative flex items-center gap-3 rounded-xl px-3.5 py-2.5 font-semibold transition-all duration-200 ${isActive
                   ? 'bg-gradient-to-r from-fire-500/25 via-amber-500/15 to-transparent text-white border-l-[3px] border-fire-500 shadow-glow-fire pl-3'
                   : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
-              }`}
+                }`}
             >
               {({ isActive }) => (
                 <>
@@ -277,11 +276,10 @@ export default function AppLayout() {
                   to="/notifications"
                   aria-label="Notification centre"
                   title="Notification centre"
-                  className={({ isActive }) => `relative inline-flex h-9 w-9 items-center justify-center rounded-full border transition ${
-                    isActive
+                  className={({ isActive }) => `relative inline-flex h-9 w-9 items-center justify-center rounded-full border transition ${isActive
                       ? 'border-fire-500 bg-fire-500/20 text-fire-400 shadow-glow-fire'
                       : 'border-white/10 bg-white/5 text-slate-200 hover:border-fire-500/50 hover:bg-fire-500/10'
-                  }`}
+                    }`}
                 >
                   <BellIcon />
                   {unreadCount > 0 && (
@@ -292,8 +290,8 @@ export default function AppLayout() {
                 </NavLink>
               )}
 
-              <button 
-                className="btn-ghost px-3 py-1.5 text-xs font-semibold text-slate-300 hover:text-red-400 hover:border-red-500/40 hover:bg-red-500/10 transition" 
+              <button
+                className="btn-ghost px-3 py-1.5 text-xs font-semibold text-slate-300 hover:text-red-400 hover:border-red-500/40 hover:bg-red-500/10 transition"
                 onClick={signOut}
               >
                 Logout
