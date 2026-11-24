@@ -12,7 +12,8 @@ import ff1vs1 from '../assets/ff-1vs1.jpg';
 import ffChampions from '../assets/ff-champions.jpg';
 import ffGameplay from '../assets/ff-gameplay.jpg';
 import ffTrophy from '../assets/ff-trophy.svg';
-import ffWhatsappBadge from '../assets/ff-whatsapp-badge.svg';
+import ffTelegramBadge from '../assets/ff-telegram-badge.svg';
+import eglTelegramQr from '../assets/egl-telegram-qr.jpg';
 import {
   Swords,
   Trophy,
@@ -35,12 +36,15 @@ import {
   Play,
   Sparkles,
   Zap,
+  Send,
+  QrCode,
 } from 'lucide-react';
 
 export default function Dashboard() {
   const { user } = useAuth();
   const { data, loading, error } = useAsync(getDashboard, []);
   const [copiedUid, setCopiedUid] = useState(false);
+  const [showTelegramQr, setShowTelegramQr] = useState(false);
 
   if (loading) {
     return (
@@ -74,6 +78,7 @@ export default function Dashboard() {
 
     return parts.map((part, index) => {
       if (part.match(urlPattern)) {
+        const isTelegram = part.includes('t.me') || part.includes('telegram.me');
         const isWhatsApp = part.includes('whatsapp.com');
         return (
           <a
@@ -81,13 +86,16 @@ export default function Dashboard() {
             href={part}
             target="_blank"
             rel="noopener noreferrer"
-            className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-0.5 text-xs font-bold transition ml-1 my-0.5 ${isWhatsApp
-                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/30'
-                : 'bg-fire-500/20 text-fire-300 border border-fire-500/40 hover:bg-fire-500/30'
+            className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-0.5 text-xs font-bold transition ml-1 my-0.5 ${isTelegram
+                ? 'bg-sky-500/20 text-sky-300 border border-sky-500/40 hover:bg-sky-500/30'
+                : isWhatsApp
+                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/30'
+                  : 'bg-fire-500/20 text-fire-300 border border-fire-500/40 hover:bg-fire-500/30'
               }`}
           >
+            {isTelegram && <Send className="h-3 w-3 text-sky-400" />}
             {isWhatsApp && <span className="text-emerald-400">📱</span>}
-            <span>{isWhatsApp ? 'Join WhatsApp Channel' : 'Visit Link'}</span>
+            <span>{isTelegram ? 'Join Telegram Channel' : isWhatsApp ? 'Join WhatsApp' : 'Visit Link'}</span>
             <ExternalLink className="h-3 w-3" />
           </a>
         );
@@ -452,39 +460,83 @@ export default function Dashboard() {
         </div>
       </section>
 
-      {/* 4. OFFICIAL WHATSAPP TOURNAMENT CHANNEL HIGHLIGHT BANNER */}
-      <section className="relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-gradient-to-r from-[#0C2417] via-[#0B1A24] to-[#070E1A] p-5 sm:p-6 shadow-[0_0_25px_rgba(37,211,102,0.15)]">
-        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-1/3 opacity-20 hidden md:block">
+      {/* 4. OFFICIAL TELEGRAM TOURNAMENT CHANNEL HIGHLIGHT BANNER */}
+      <section className="relative overflow-hidden rounded-2xl border border-sky-500/40 bg-gradient-to-r from-[#081B2B] via-[#0B1524] to-[#070D18] p-5 sm:p-6 shadow-[0_0_25px_rgba(14,165,233,0.18)]">
+        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-1/3 opacity-15 hidden md:block">
           <img src={ffGameplay} alt="Gameplay background" className="h-full w-full object-cover" />
         </div>
         <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-start gap-4">
-            <img src={ffWhatsappBadge} alt="WhatsApp" className="h-12 w-12 shrink-0 drop-shadow-[0_0_12px_rgba(37,211,102,0.4)]" />
+          <div className="flex items-start sm:items-center gap-4">
+            <div className="relative shrink-0">
+              <img
+                src={ffTelegramBadge}
+                alt="Telegram"
+                className="h-12 w-12 sm:h-14 sm:w-14 drop-shadow-[0_0_14px_rgba(14,165,233,0.5)]"
+              />
+            </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="rounded-full bg-emerald-500/20 px-2.5 py-0.5 text-[10px] font-black tracking-wide text-emerald-400 border border-emerald-500/30 uppercase">
+                <span className="rounded-full bg-sky-500/20 px-2.5 py-0.5 text-[10px] font-black tracking-wide text-sky-400 border border-sky-500/30 uppercase">
                   Official Match Alerts
                 </span>
                 <span className="text-xs text-slate-400">• Free Fire Updates</span>
               </div>
               <h3 className="mt-1 text-base sm:text-lg font-black text-white">
-                Join the Official EGL Free Fire WhatsApp Channel
+                Join the Official EGL Free Fire Telegram Channel
               </h3>
               <p className="mt-0.5 text-xs text-slate-300 max-w-2xl">
-                Get instant Room ID, Password drops, tournament schedules, and live bracket updates directly on your phone!
+                Get instant Room ID, Password drops, tournament schedules, and live bracket updates directly on <b className="text-sky-300 font-mono">@EliteGrindeSports</b>!
               </p>
             </div>
           </div>
-          <a
-            href="https://whatsapp.com/channel/0029VbBYbezGU3BKFDuSk2j"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 px-5 py-3 text-xs sm:text-sm font-black text-white shadow-[0_0_20px_rgba(37,211,102,0.35)] transition hover:brightness-110 active:scale-95"
-          >
-            <span>Join WhatsApp Channel</span>
-            <ExternalLink className="h-4 w-4" />
-          </a>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <a
+              href="https://t.me/EliteGrindeSports"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 px-5 py-3 text-xs sm:text-sm font-black text-white shadow-[0_0_20px_rgba(14,165,233,0.4)] transition hover:brightness-110 active:scale-95"
+            >
+              <Send className="h-4 w-4" />
+              <span>Join Telegram Channel</span>
+              <ExternalLink className="h-4 w-4" />
+            </a>
+
+            <button
+              onClick={() => setShowTelegramQr(!showTelegramQr)}
+              title="Show QR Code to scan on mobile"
+              className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-xl border border-sky-500/30 bg-sky-500/10 px-3 py-3 text-xs font-bold text-sky-300 hover:bg-sky-500/20 transition active:scale-95"
+            >
+              <QrCode className="h-4 w-4" />
+              <span className="hidden sm:inline">QR Code</span>
+            </button>
+          </div>
         </div>
+
+        {/* Expandable QR Code Drawer */}
+        {showTelegramQr && (
+          <div className="relative mt-4 pt-4 border-t border-sky-500/20 flex flex-col sm:flex-row items-center gap-4 bg-black/40 rounded-xl p-4">
+            <img
+              src={eglTelegramQr}
+              alt="Scan to join @EliteGrindeSports on Telegram"
+              className="h-32 w-32 rounded-xl border-2 border-sky-500/40 shadow-glow bg-white p-1"
+            />
+            <div className="text-center sm:text-left space-y-1">
+              <p className="text-sm font-black text-white">Scan with phone camera</p>
+              <p className="text-xs text-slate-300">
+                Directly opens <b>t.me/EliteGrindeSports</b> on your phone Telegram app.
+              </p>
+              <a
+                href="https://t.me/EliteGrindeSports"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-sky-400 font-mono font-bold hover:underline inline-block mt-1"
+              >
+                t.me/EliteGrindeSports →
+              </a>
+            </div>
+          </div>
+        )}
       </section>
 
       {/* 5. WALLET ACTIVITY & TOURNAMENT UPDATES GRID */}
