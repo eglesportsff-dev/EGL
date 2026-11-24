@@ -6,6 +6,8 @@ import { useAuth } from '../context/AuthContext';
 import useAsync from '../hooks/useAsync';
 import { getMatches, getControllerMatches, joinMatch, validateTeamJoin, joinTeam, getMatchParticipants, saveMatchRoomDetails, saveMatchTiming, submitMatchResults, deleteControllerMatch } from '../services/tournamentService';
 import { when } from '../utils/format';
+import ffBrBanner from '../assets/ff-br-tournament-banner.jpg';
+import { Flame, Trophy, Shield, Crosshair } from 'lucide-react';
 
 
 const groups = {
@@ -481,6 +483,55 @@ export default function Matches() {
             {!user && <Link className="btn-primary" to="/login">Player Login</Link>}
           </div>
         </header>
+
+        {/* FREE FIRE BATTLE ROYALE SPOTLIGHT */}
+        {(type === 'ALL' || type === 'BATTLE_ROYALE') && (
+          <section className="relative overflow-hidden rounded-2xl border border-fire-500/40 bg-gradient-to-r from-[#170E08] via-[#0D1222] to-[#080B14] p-5 sm:p-6 shadow-glow-fire">
+            <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
+              <div className="space-y-3 max-w-2xl">
+                <div className="inline-flex items-center gap-2 rounded-full border border-fire-500/30 bg-fire-500/15 px-3 py-1 text-xs font-black uppercase tracking-wider text-amber-300">
+                  <Flame className="h-3.5 w-3.5 text-fire-400" />
+                  <span>Free Fire Battle Royale (BR) • 48 Survivors</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                  Bermuda & Purgatory <span className="bg-gradient-to-r from-amber-400 via-fire-500 to-red-500 bg-clip-text text-transparent">Survival Arena</span>
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  Join intense Free Fire Battle Royale custom rooms! Drop from the plane, secure airdrop loot, master your Gloo Walls, and survive against 48 players for Booyah prizes.
+                </p>
+
+                {/* Placement Prize Scale */}
+                <div className="grid grid-cols-3 gap-2.5 pt-1">
+                  <div className="rounded-xl bg-black/60 border border-fire-500/30 p-2.5 text-center">
+                    <span className="text-[10px] uppercase font-bold text-fire-400 block">1st Booyah! 🏆</span>
+                    <b className="font-mono text-sm sm:text-base text-amber-300">8x Entry Fee</b>
+                  </div>
+                  <div className="rounded-xl bg-black/60 border border-white/10 p-2.5 text-center">
+                    <span className="text-[10px] uppercase font-bold text-slate-400 block">2nd Place 🥈</span>
+                    <b className="font-mono text-sm sm:text-base text-slate-200">6x Entry Fee</b>
+                  </div>
+                  <div className="rounded-xl bg-black/60 border border-white/10 p-2.5 text-center">
+                    <span className="text-[10px] uppercase font-bold text-slate-400 block">3rd Place 🥉</span>
+                    <b className="font-mono text-sm sm:text-base text-slate-200">3x Entry Fee</b>
+                  </div>
+                </div>
+              </div>
+
+              {/* Banner Image */}
+              <div className="shrink-0 w-full lg:w-80 h-48 rounded-2xl overflow-hidden border-2 border-fire-500/40 shadow-glow-fire relative group">
+                <img
+                  src={ffBrBanner}
+                  alt="Battle Royale Arena"
+                  className="h-full w-full object-cover object-center transition duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+                <span className="absolute bottom-2.5 inset-x-0 text-center text-[11px] font-black uppercase tracking-wider text-amber-300 drop-shadow">
+                  48 Slots • Custom Room
+                </span>
+              </div>
+            </div>
+          </section>
+        )}
 
        <section className="panel">
 
