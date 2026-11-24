@@ -28,4 +28,9 @@ public class AuthController {
     public AuthResponse login(@Valid @RequestBody LoginRequest request) {
         return authService.login(request);
     }
+
+    @GetMapping("/email-status")
+    public java.util.Map<String, Object> emailStatus() {
+        return authService.getEmailStatus();
+    }
 }

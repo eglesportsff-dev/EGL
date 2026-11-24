@@ -195,4 +195,8 @@ public class AuthService {
                 user.getUsername(), user.getGameUid(), user.getProfileScreenshotUrl(), user.getUpiId(),
                 user.getEmail(), user.getRole());
     }
+
+    public java.util.Map<String, Object> getEmailStatus() {
+        return emailService.getStatus();
+    }
 }
