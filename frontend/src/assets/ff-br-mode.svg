@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" fill="none">
+  <defs>
+    <linearGradient id="brBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E1308" />
+      <stop offset="100%" stop-color="#0A0F1D" />
+    </linearGradient>
+    <linearGradient id="crateRed" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EF4444" />
+      <stop offset="100%" stop-color="#991B1B" />
+    </linearGradient>
+    <linearGradient id="crateBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3B82F6" />
+      <stop offset="100%" stop-color="#1E40AF" />
+    </linearGradient>
+    <linearGradient id="flare" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FF5E14" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#FF5E14" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="320" height="200" rx="16" fill="url(#brBg)" />
+  
+  <!-- Subtle Battle Grid & Radar Circles -->
+  <circle cx="160" cy="100" r="80" stroke="#FF5E14" stroke-width="1" stroke-dasharray="4 6" opacity="0.15" />
+  <circle cx="160" cy="100" r="50" stroke="#FF5E14" stroke-width="1" stroke-dasharray="2 4" opacity="0.25" />
+  <line x1="40" y1="100" x2="280" y2="100" stroke="#FF5E14" stroke-width="1" opacity="0.1" />
+  <line x1="160" y1="20" x2="160" y2="180" stroke="#FF5E14" stroke-width="1" opacity="0.1" />
+
+  <!-- Red Smoke Signal Beam (Free Fire Airdrop Smoke) -->
+  <polygon points="152,110 145,20 175,20 168,110" fill="url(#flare)" opacity="0.7" />
+  <circle cx="160" cy="20" r="18" fill="#FF5E14" opacity="0.3" filter="blur(6px)" />
+
+  <!-- Airdrop Parachute in Sky -->
+  <path d="M135 45 C135 25 185 25 185 45 Z" fill="#FF5E14" opacity="0.6" />
+  <line x1="135" y1="45" x2="155" y2="65" stroke="#FFFFFF" stroke-width="1" opacity="0.5" />
+  <line x1="185" y1="45" x2="165" y2="65" stroke="#FFFFFF" stroke-width="1" opacity="0.5" />
+  <line x1="160" y1="45" x2="160" y2="65" stroke="#FFFFFF" stroke-width="1" opacity="0.5" />
+
+  <!-- Airdrop Supply Crate (Classic Free Fire Red Top / Blue Bottom) -->
+  <g transform="translate(130, 95)">
+    <!-- Blue Container Body -->
+    <rect x="0" y="24" width="60" height="42" rx="4" fill="url(#crateBlue)" stroke="#60A5FA" stroke-width="1.5" />
+    <!-- Yellow Straps -->
+    <rect x="14" y="24" width="6" height="42" fill="#FACC15" />
+    <rect x="40" y="24" width="6" height="42" fill="#FACC15" />
+    <!-- Red Roof Top -->
+    <path d="M -4 24 L 8 4 L 52 4 L 64 24 Z" fill="url(#crateRed)" stroke="#F87171" stroke-width="1.5" />
+    <line x1="30" y1="4" x2="30" y2="24" stroke="#FECACA" stroke-width="2" />
+  </g>
+
+  <!-- Ground Shadow & Fire Embers -->
+  <ellipse cx="160" cy="165" rx="45" ry="8" fill="#000000" opacity="0.6" />
+  <circle cx="120" cy="140" r="3" fill="#FFB800" opacity="0.8" />
+  <circle cx="200" cy="130" r="2.5" fill="#FF5E14" opacity="0.9" />
+  <circle cx="180" cy="80" r="2" fill="#FACC15" opacity="0.7" />
+  <circle cx="140" cy="70" r="2.5" fill="#FF5E14" opacity="0.8" />
+
+  <!-- Coordinates & Mode Tag -->
+  <text x="20" y="32" fill="#FACC15" font-family="sans-serif" font-weight="900" font-size="11" letter-spacing="2">BERMUDA • PURGATORY</text>
+  <text x="20" y="180" fill="#9CA3AF" font-family="sans-serif" font-weight="700" font-size="10" letter-spacing="1">48 SURVIVORS • 1 BOOYAH</text>
+</svg>

@@ -49,6 +49,14 @@ body {
     @apply rounded-xl2 border border-white/10 bg-card/90 p-4 shadow-glow;
   }
 
+  .panel-esports {
+    @apply rounded-xl2 border border-white/10 bg-gradient-to-b from-[#0F172A]/90 to-[#0A0E1A]/95 p-5 shadow-glow-card backdrop-blur-md transition-all duration-300;
+  }
+
+  .panel-fire {
+    @apply rounded-xl2 border border-fire-500/30 bg-gradient-to-br from-[#1A0F0A]/90 via-[#0F1424]/90 to-[#0A0E1A]/95 p-5 shadow-glow-fire backdrop-blur-md;
+  }
+
   .btn {
     @apply inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50;
   }
@@ -57,26 +65,42 @@ body {
     @apply btn bg-primary text-white shadow-glow hover:bg-violet-500;
   }
 
+  .btn-fire {
+    @apply btn bg-gradient-to-r from-amber-500 via-fire-500 to-red-600 text-white font-black tracking-wide shadow-glow-fire hover:brightness-110 active:scale-[0.98];
+  }
+
+  .btn-booyah {
+    @apply btn bg-gradient-to-r from-yellow-400 via-booyah-500 to-amber-500 text-slate-950 font-black tracking-wide shadow-glow-booyah hover:brightness-110 active:scale-[0.98];
+  }
+
+  .btn-cyber {
+    @apply btn bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold tracking-wide shadow-glow-cyber hover:brightness-110 active:scale-[0.98];
+  }
+
   .btn-ghost {
     @apply btn border border-white/10 bg-white/5 text-slate-200 hover:border-primary hover:bg-primary/10;
   }
 
+  .btn-ghost-fire {
+    @apply btn border border-fire-500/30 bg-fire-500/10 text-fire-400 hover:border-fire-500 hover:bg-fire-500/20;
+  }
+
   .input {
-    @apply w-full rounded-xl border border-white/10 bg-bg/80 px-3 py-3 text-sm text-slate-100 outline-none focus:border-primary;
+    @apply w-full rounded-xl border border-white/10 bg-bg/80 px-3 py-3 text-sm text-slate-100 outline-none focus:border-fire-500 transition-colors;
   }
 
   .hero-grid {
     background-image:
-      linear-gradient(rgba(139, 92, 246, .08) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(139, 92, 246, .08) 1px, transparent 1px);
-    background-size: 72px 72px;
+      linear-gradient(rgba(255, 94, 20, .04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 94, 20, .04) 1px, transparent 1px);
+    background-size: 54px 54px;
   }
 
   .hero-glow {
     background:
-      radial-gradient(circle at 20% 10%, rgba(139, 92, 246, .25), transparent 35%),
-      radial-gradient(circle at 78% 20%, rgba(124, 58, 237, .20), transparent 32%),
-      #070B1A;
+      radial-gradient(circle at 20% 10%, rgba(255, 94, 20, .20), transparent 40%),
+      radial-gradient(circle at 78% 20%, rgba(255, 184, 0, .15), transparent 35%),
+      #060913;
   }
 }
 
