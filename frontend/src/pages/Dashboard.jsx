@@ -6,9 +6,11 @@ import { getDashboard } from '../services/tournamentService';
 import { money, when } from '../utils/format';
 import { useAuth } from '../context/AuthContext';
 import ffBannerBadge from '../assets/ff-banner-badge.svg';
-import ffBrMode from '../assets/ff-br-mode.svg';
-import ffCsMode from '../assets/ff-cs-mode.svg';
-import ffLoneWolfMode from '../assets/ff-lonewolf-mode.svg';
+import ffBrSoloSquad from '../assets/ff-br-solosquad.jpg';
+import ffCsSquad from '../assets/ff-cs-squad.jpg';
+import ff1vs1 from '../assets/ff-1vs1.jpg';
+import ffChampions from '../assets/ff-champions.jpg';
+import ffGameplay from '../assets/ff-gameplay.jpg';
 import ffTrophy from '../assets/ff-trophy.svg';
 import ffWhatsappBadge from '../assets/ff-whatsapp-badge.svg';
 import {
@@ -143,12 +145,18 @@ export default function Dashboard() {
 
           {/* Right Hero Badge Illustration */}
           <div className="hidden sm:flex shrink-0 items-center justify-center">
-            <div className="relative">
-              <img
-                src={ffBannerBadge}
-                alt="Free Fire Tournament Emblem"
-                className="h-28 w-28 sm:h-36 sm:w-36 drop-shadow-[0_0_25px_rgba(255,94,20,0.4)] animate-pulse"
-              />
+            <div className="relative group">
+              <div className="relative h-28 w-28 sm:h-36 sm:w-36 overflow-hidden rounded-2xl border-2 border-fire-500/50 shadow-glow-fire transition duration-300 group-hover:scale-105">
+                <img
+                  src={ffChampions}
+                  alt="Free Fire Champions"
+                  className="h-full w-full object-cover object-top"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                <span className="absolute bottom-1.5 inset-x-0 text-center text-[10px] font-black uppercase tracking-wider text-amber-300">
+                  TOP SURVIVOR
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -297,27 +305,32 @@ export default function Dashboard() {
             to="/matches"
             className="group relative overflow-hidden rounded-2xl border border-white/10 bg-[#0C1220] transition duration-300 hover:-translate-y-1 hover:border-fire-500/50 hover:shadow-glow-fire"
           >
-            <div className="h-36 w-full overflow-hidden bg-black/40">
+            <div className="relative h-44 w-full overflow-hidden bg-black/60">
               <img
-                src={ffBrMode}
+                src={ffBrSoloSquad}
                 alt="Battle Royale Mode"
-                className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                className="h-full w-full object-cover object-center transition duration-500 group-hover:scale-110"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0C1220] via-transparent to-transparent" />
+              <span className="absolute top-3 right-3 rounded-full bg-fire-500 px-2.5 py-1 text-[10px] font-black uppercase text-white shadow-glow-fire">
+                8x REWARDS
+              </span>
+              <span className="absolute bottom-2 left-3 rounded bg-black/70 backdrop-blur-sm px-2 py-0.5 text-[10px] font-bold text-amber-400 border border-amber-400/30">
+                SOLO / DUO / SQUAD
+              </span>
             </div>
             <div className="p-4">
               <div className="flex items-center justify-between">
-                <h3 className="font-black text-white text-base">Battle Royale (BR)</h3>
-                <span className="rounded-full bg-fire-500/15 border border-fire-500/30 px-2 py-0.5 text-[10px] font-black text-fire-400 uppercase">
-                  8x Rewards
-                </span>
+                <h3 className="font-black text-white text-base tracking-tight">Battle Royale (BR)</h3>
+                <span className="text-[11px] font-bold text-fire-400">Survival Room</span>
               </div>
-              <p className="mt-1 text-xs text-slate-400 line-clamp-2">
+              <p className="mt-1.5 text-xs text-slate-400 line-clamp-2">
                 Solo, Duo, and Squad survival matches on Bermuda & Purgatory. Outlast 48 players for Booyah!
               </p>
-              <div className="mt-3 flex items-center justify-between text-xs font-bold text-amber-400">
-                <span>Custom Room Entry</span>
-                <span className="flex items-center gap-1 group-hover:translate-x-1 transition">
-                  Play Now <ChevronRight className="h-3 w-3" />
+              <div className="mt-4 flex items-center justify-between text-xs font-bold text-amber-400 border-t border-white/5 pt-3">
+                <span className="text-slate-300">Room Entry Available</span>
+                <span className="flex items-center gap-1 text-fire-400 font-extrabold group-hover:translate-x-1 transition">
+                  PLAY NOW →
                 </span>
               </div>
             </div>
@@ -328,27 +341,32 @@ export default function Dashboard() {
             to="/matches"
             className="group relative overflow-hidden rounded-2xl border border-white/10 bg-[#0C1220] transition duration-300 hover:-translate-y-1 hover:border-cyan-500/50 hover:shadow-glow-cyber"
           >
-            <div className="h-36 w-full overflow-hidden bg-black/40">
+            <div className="relative h-44 w-full overflow-hidden bg-black/60">
               <img
-                src={ffCsMode}
-                alt="Clash Squad Mode"
-                className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                src={ffCsSquad}
+                alt="Clash Squad 4v4 Mode"
+                className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-110"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0C1220] via-transparent to-transparent" />
+              <span className="absolute top-3 right-3 rounded-full bg-cyan-500 px-2.5 py-1 text-[10px] font-black uppercase text-black shadow-glow-cyber font-mono">
+                4v4 SQUAD
+              </span>
+              <span className="absolute bottom-2 left-3 rounded bg-black/70 backdrop-blur-sm px-2 py-0.5 text-[10px] font-bold text-cyan-400 border border-cyan-400/30">
+                FAST 7-ROUNDS
+              </span>
             </div>
             <div className="p-4">
               <div className="flex items-center justify-between">
-                <h3 className="font-black text-white text-base">Clash Squad (CS 4v4)</h3>
-                <span className="rounded-full bg-cyan-500/15 border border-cyan-500/30 px-2 py-0.5 text-[10px] font-black text-cyan-400 uppercase">
-                  Fast 7-Rounds
-                </span>
+                <h3 className="font-black text-white text-base tracking-tight">Clash Squad (CS 4v4)</h3>
+                <span className="text-[11px] font-bold text-cyan-400">Team Battle</span>
               </div>
-              <p className="mt-1 text-xs text-slate-400 line-clamp-2">
+              <p className="mt-1.5 text-xs text-slate-400 line-clamp-2">
                 Fast-paced 4v4 tactical combat. Buy weapons each round, wipe out the enemy squad, and take the prize.
               </p>
-              <div className="mt-3 flex items-center justify-between text-xs font-bold text-cyan-400">
-                <span>Team & Solo Queues</span>
-                <span className="flex items-center gap-1 group-hover:translate-x-1 transition">
-                  Play Now <ChevronRight className="h-3 w-3" />
+              <div className="mt-4 flex items-center justify-between text-xs font-bold text-cyan-400 border-t border-white/5 pt-3">
+                <span className="text-slate-300">Full & Random Teams</span>
+                <span className="flex items-center gap-1 text-cyan-400 font-extrabold group-hover:translate-x-1 transition">
+                  PLAY NOW →
                 </span>
               </div>
             </div>
@@ -359,27 +377,32 @@ export default function Dashboard() {
             to="/matches"
             className="group relative overflow-hidden rounded-2xl border border-white/10 bg-[#0C1220] transition duration-300 hover:-translate-y-1 hover:border-yellow-500/50 hover:shadow-glow-booyah"
           >
-            <div className="h-36 w-full overflow-hidden bg-black/40">
+            <div className="relative h-44 w-full overflow-hidden bg-black/60">
               <img
-                src={ffLoneWolfMode}
-                alt="Lone Wolf Mode"
-                className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                src={ff1vs1}
+                alt="Lone Wolf 1v1 Mode"
+                className="h-full w-full object-cover object-center transition duration-500 group-hover:scale-110"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0C1220] via-transparent to-transparent" />
+              <span className="absolute top-3 right-3 rounded-full bg-amber-400 px-2.5 py-1 text-[10px] font-black uppercase text-black shadow-glow-booyah">
+                1v1 / 2v2 DUEL
+              </span>
+              <span className="absolute bottom-2 left-3 rounded bg-black/70 backdrop-blur-sm px-2 py-0.5 text-[10px] font-bold text-yellow-400 border border-yellow-400/30">
+                IRON CAGE
+              </span>
             </div>
             <div className="p-4">
               <div className="flex items-center justify-between">
-                <h3 className="font-black text-white text-base">Lone Wolf (1v1 / 2v2)</h3>
-                <span className="rounded-full bg-yellow-400/15 border border-yellow-400/30 px-2 py-0.5 text-[10px] font-black text-yellow-400 uppercase">
-                  Pure Skill
-                </span>
+                <h3 className="font-black text-white text-base tracking-tight">Lone Wolf (1v1 / 2v2)</h3>
+                <span className="text-[11px] font-bold text-amber-400">Headshot Arena</span>
               </div>
-              <p className="mt-1 text-xs text-slate-400 line-clamp-2">
+              <p className="mt-1.5 text-xs text-slate-400 line-clamp-2">
                 Iron Cage 1v1 duel arena. Prove your aim, fast Gloo Walls, and headshot skills without interference.
               </p>
-              <div className="mt-3 flex items-center justify-between text-xs font-bold text-yellow-400">
-                <span>Head-to-Head Duel</span>
-                <span className="flex items-center gap-1 group-hover:translate-x-1 transition">
-                  Play Now <ChevronRight className="h-3 w-3" />
+              <div className="mt-4 flex items-center justify-between text-xs font-bold text-amber-400 border-t border-white/5 pt-3">
+                <span className="text-slate-300">Head-to-Head Duel</span>
+                <span className="flex items-center gap-1 text-amber-400 font-extrabold group-hover:translate-x-1 transition">
+                  PLAY NOW →
                 </span>
               </div>
             </div>
@@ -389,7 +412,10 @@ export default function Dashboard() {
 
       {/* 4. OFFICIAL WHATSAPP TOURNAMENT CHANNEL HIGHLIGHT BANNER */}
       <section className="relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-gradient-to-r from-[#0C2417] via-[#0B1A24] to-[#070E1A] p-5 sm:p-6 shadow-[0_0_25px_rgba(37,211,102,0.15)]">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-1/3 opacity-20 hidden md:block">
+          <img src={ffGameplay} alt="Gameplay background" className="h-full w-full object-cover" />
+        </div>
+        <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-start gap-4">
             <img src={ffWhatsappBadge} alt="WhatsApp" className="h-12 w-12 shrink-0 drop-shadow-[0_0_12px_rgba(37,211,102,0.4)]" />
             <div>
@@ -581,7 +607,10 @@ export default function Dashboard() {
       {/* 7. TOURNAMENT APPLICATION CTA (FOR QUALIFIED PLAYERS) */}
       {data.qualificationStatus === 'Q' && (
         <section className="relative overflow-hidden rounded-2xl border-2 border-yellow-400/60 bg-gradient-to-r from-[#2B1B0A] via-[#1A1422] to-[#0A0D18] p-6 shadow-glow-booyah">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-5">
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-1/3 opacity-25 hidden md:block">
+            <img src={ffChampions} alt="Champions Background" className="h-full w-full object-cover object-top" />
+          </div>
+          <div className="relative flex flex-col sm:flex-row items-center justify-between gap-5">
             <div className="flex items-center gap-4 text-center sm:text-left">
               <img src={ffTrophy} alt="Trophy" className="h-16 w-16 shrink-0 drop-shadow-[0_0_15px_rgba(255,184,0,0.5)]" />
               <div>
