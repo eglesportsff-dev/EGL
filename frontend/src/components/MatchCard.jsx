@@ -1,7 +1,6 @@
 import { money, when } from '../utils/format';
-import ffBrBanner from '../assets/ff-br-tournament-banner.jpg';
-import ffBrSoloSquad from '../assets/ff-br-solosquad.jpg';
-import ffCsSquad from '../assets/ff-cs-squad.jpg';
+import ffBrMode from '../assets/ff-br-mode.jpg';
+import ffCsMode from '../assets/ff-cs-mode.jpg';
 import ff1vs1 from '../assets/ff-1vs1.jpg';
 import { Trophy, Users, Clock, Flame } from 'lucide-react';
 
@@ -26,18 +25,18 @@ export default function MatchCard({
 
   // Select appropriate Free Fire image
   const matchImage = match.gameType === 'BATTLE_ROYALE'
-    ? (match.variant === 'BR_SOLO' ? ffBrSoloSquad : ffBrBanner)
+    ? ffBrMode
     : match.gameType === 'CLASH_SQUAD'
-    ? ffCsSquad
-    : ff1vs1;
+      ? ffCsMode
+      : ff1vs1;
 
   const variantLabel = match.variant ? match.variant.replaceAll('_', ' ') : '';
   const gameTypeLabel = match.gameType ? match.gameType.replaceAll('_', ' ') : 'MATCH';
 
   return (
     <article className="panel-esports overflow-hidden p-0 group border border-white/10 hover:border-fire-500/40 transition-all duration-300">
-      {/* TOP IMAGE BANNER */}
-      <div className="relative h-44 w-full overflow-hidden bg-black/70">
+      {/* TOP IMAGE BANNER - RESPONSIVE 16:9 */}
+      <div className="relative aspect-[16/9] w-full overflow-hidden bg-black/70">
         <img
           src={matchImage}
           alt={match.title}
@@ -160,11 +159,10 @@ export default function MatchCard({
         {footerContent || (
           <div className="pt-1">
             <button
-              className={`w-full py-2.5 text-xs sm:text-sm font-black tracking-wide rounded-xl transition ${
-                disabled
+              className={`w-full py-2.5 text-xs sm:text-sm font-black tracking-wide rounded-xl transition ${disabled
                   ? 'bg-white/10 text-slate-500 cursor-not-allowed'
                   : 'btn-fire shadow-glow-fire hover:brightness-110 active:scale-95'
-              }`}
+                }`}
               disabled={disabled}
               onClick={() => (onAction ? onAction(match) : onJoin?.(match.id))}
             >

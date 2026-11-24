@@ -6,8 +6,8 @@ import { getDashboard } from '../services/tournamentService';
 import { money, when } from '../utils/format';
 import { useAuth } from '../context/AuthContext';
 import ffBannerBadge from '../assets/ff-banner-badge.svg';
-import ffBrSoloSquad from '../assets/ff-br-solosquad.jpg';
-import ffCsSquad from '../assets/ff-cs-squad.jpg';
+import ffBrMode from '../assets/ff-br-mode.jpg';
+import ffCsMode from '../assets/ff-cs-mode.jpg';
 import ff1vs1 from '../assets/ff-1vs1.jpg';
 import ffChampions from '../assets/ff-champions.jpg';
 import ffGameplay from '../assets/ff-gameplay.jpg';
@@ -303,32 +303,46 @@ export default function Dashboard() {
           {/* Battle Royale Card */}
           <Link
             to="/matches"
-            className="group relative overflow-hidden rounded-2xl border border-white/10 bg-[#0C1220] transition duration-300 hover:-translate-y-1 hover:border-fire-500/50 hover:shadow-glow-fire"
+            className="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0C1220] transition duration-300 hover:-translate-y-1 hover:border-fire-500/50 hover:shadow-glow-fire"
           >
-            <div className="relative h-44 w-full overflow-hidden bg-black/60">
+            {/* Clean 16:9 Image Container - Zero Badges Over Artwork */}
+            <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#070A12]">
               <img
-                src={ffBrSoloSquad}
-                alt="Battle Royale Mode"
-                className="h-full w-full object-cover object-center transition duration-500 group-hover:scale-110"
+                src={ffBrMode}
+                alt="Free Fire Battle Royale Mode"
+                className="h-full w-full object-cover object-center transition duration-500 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0C1220] via-transparent to-transparent" />
-              <span className="absolute top-3 right-3 rounded-full bg-fire-500 px-2.5 py-1 text-[10px] font-black uppercase text-white shadow-glow-fire">
-                8x REWARDS
-              </span>
-              <span className="absolute bottom-2 left-3 rounded bg-black/70 backdrop-blur-sm px-2 py-0.5 text-[10px] font-bold text-amber-400 border border-amber-400/30">
-                SOLO / DUO / SQUAD
-              </span>
+              <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-[#0C1220] to-transparent" />
             </div>
-            <div className="p-4">
-              <div className="flex items-center justify-between">
-                <h3 className="font-black text-white text-base tracking-tight">Battle Royale (BR)</h3>
-                <span className="text-[11px] font-bold text-fire-400">Survival Room</span>
+
+            {/* Content & Metadata */}
+            <div className="flex flex-1 flex-col justify-between p-4 sm:p-5">
+              <div>
+                <div className="flex flex-wrap items-center justify-between gap-1.5 mb-2.5">
+                  <span className="inline-flex items-center gap-1 rounded-md bg-fire-500/15 border border-fire-500/30 px-2.5 py-0.5 text-[10px] sm:text-xs font-black uppercase text-fire-400">
+                    🔥 8X REWARDS
+                  </span>
+                  <span className="inline-flex items-center rounded-md bg-white/5 border border-white/10 px-2 py-0.5 text-[10px] font-bold text-slate-300">
+                    SOLO / DUO / SQUAD
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <h3 className="font-black text-white text-base sm:text-lg tracking-tight">Battle Royale (BR)</h3>
+                  <span className="text-[11px] font-extrabold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded-full border border-amber-400/20">
+                    Survival Room
+                  </span>
+                </div>
+                <p className="mt-2 text-xs text-slate-400 leading-relaxed">
+                  Solo, Duo, and Squad survival matches on Bermuda & Purgatory. Outlast 48 players for Booyah!
+                </p>
               </div>
-              <p className="mt-1.5 text-xs text-slate-400 line-clamp-2">
-                Solo, Duo, and Squad survival matches on Bermuda & Purgatory. Outlast 48 players for Booyah!
-              </p>
-              <div className="mt-4 flex items-center justify-between text-xs font-bold text-amber-400 border-t border-white/5 pt-3">
-                <span className="text-slate-300">Room Entry Available</span>
+
+              <div className="mt-4 flex items-center justify-between text-xs font-bold border-t border-white/5 pt-3">
+                <span className="text-slate-400 flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                  Room Entry Available
+                </span>
                 <span className="flex items-center gap-1 text-fire-400 font-extrabold group-hover:translate-x-1 transition">
                   PLAY NOW →
                 </span>
@@ -339,32 +353,46 @@ export default function Dashboard() {
           {/* Clash Squad Card */}
           <Link
             to="/matches"
-            className="group relative overflow-hidden rounded-2xl border border-white/10 bg-[#0C1220] transition duration-300 hover:-translate-y-1 hover:border-cyan-500/50 hover:shadow-glow-cyber"
+            className="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0C1220] transition duration-300 hover:-translate-y-1 hover:border-cyan-500/50 hover:shadow-glow-cyber"
           >
-            <div className="relative h-44 w-full overflow-hidden bg-black/60">
+            {/* Clean 16:9 Image Container - Zero Badges Over Artwork */}
+            <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#070A12]">
               <img
-                src={ffCsSquad}
-                alt="Clash Squad 4v4 Mode"
-                className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-110"
+                src={ffCsMode}
+                alt="Free Fire Clash Squad 4v4 Mode"
+                className="h-full w-full object-cover object-center transition duration-500 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0C1220] via-transparent to-transparent" />
-              <span className="absolute top-3 right-3 rounded-full bg-cyan-500 px-2.5 py-1 text-[10px] font-black uppercase text-black shadow-glow-cyber font-mono">
-                4v4 SQUAD
-              </span>
-              <span className="absolute bottom-2 left-3 rounded bg-black/70 backdrop-blur-sm px-2 py-0.5 text-[10px] font-bold text-cyan-400 border border-cyan-400/30">
-                FAST 7-ROUNDS
-              </span>
+              <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-[#0C1220] to-transparent" />
             </div>
-            <div className="p-4">
-              <div className="flex items-center justify-between">
-                <h3 className="font-black text-white text-base tracking-tight">Clash Squad (CS 4v4)</h3>
-                <span className="text-[11px] font-bold text-cyan-400">Team Battle</span>
+
+            {/* Content & Metadata */}
+            <div className="flex flex-1 flex-col justify-between p-4 sm:p-5">
+              <div>
+                <div className="flex flex-wrap items-center justify-between gap-1.5 mb-2.5">
+                  <span className="inline-flex items-center gap-1 rounded-md bg-cyan-500/15 border border-cyan-500/30 px-2.5 py-0.5 text-[10px] sm:text-xs font-black uppercase text-cyan-400">
+                    ⚡ 4v4 SQUAD
+                  </span>
+                  <span className="inline-flex items-center rounded-md bg-white/5 border border-white/10 px-2 py-0.5 text-[10px] font-bold text-slate-300">
+                    FAST 7-ROUNDS
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <h3 className="font-black text-white text-base sm:text-lg tracking-tight">Clash Squad (CS 4v4)</h3>
+                  <span className="text-[11px] font-extrabold text-cyan-400 bg-cyan-400/10 px-2 py-0.5 rounded-full border border-cyan-400/20">
+                    Team Battle
+                  </span>
+                </div>
+                <p className="mt-2 text-xs text-slate-400 leading-relaxed">
+                  Fast-paced 4v4 tactical combat. Buy weapons each round, wipe out the enemy squad, and take the prize.
+                </p>
               </div>
-              <p className="mt-1.5 text-xs text-slate-400 line-clamp-2">
-                Fast-paced 4v4 tactical combat. Buy weapons each round, wipe out the enemy squad, and take the prize.
-              </p>
-              <div className="mt-4 flex items-center justify-between text-xs font-bold text-cyan-400 border-t border-white/5 pt-3">
-                <span className="text-slate-300">Full & Random Teams</span>
+
+              <div className="mt-4 flex items-center justify-between text-xs font-bold border-t border-white/5 pt-3">
+                <span className="text-slate-400 flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse" />
+                  Full & Random Teams
+                </span>
                 <span className="flex items-center gap-1 text-cyan-400 font-extrabold group-hover:translate-x-1 transition">
                   PLAY NOW →
                 </span>
@@ -375,32 +403,46 @@ export default function Dashboard() {
           {/* Lone Wolf Card */}
           <Link
             to="/matches"
-            className="group relative overflow-hidden rounded-2xl border border-white/10 bg-[#0C1220] transition duration-300 hover:-translate-y-1 hover:border-yellow-500/50 hover:shadow-glow-booyah"
+            className="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0C1220] transition duration-300 hover:-translate-y-1 hover:border-yellow-500/50 hover:shadow-glow-booyah"
           >
-            <div className="relative h-44 w-full overflow-hidden bg-black/60">
+            {/* Clean 16:9 Image Container - Zero Badges Over Artwork */}
+            <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#070A12]">
               <img
                 src={ff1vs1}
-                alt="Lone Wolf 1v1 Mode"
-                className="h-full w-full object-cover object-center transition duration-500 group-hover:scale-110"
+                alt="Free Fire Lone Wolf 1v1 Mode"
+                className="h-full w-full object-cover object-center transition duration-500 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0C1220] via-transparent to-transparent" />
-              <span className="absolute top-3 right-3 rounded-full bg-amber-400 px-2.5 py-1 text-[10px] font-black uppercase text-black shadow-glow-booyah">
-                1v1 / 2v2 DUEL
-              </span>
-              <span className="absolute bottom-2 left-3 rounded bg-black/70 backdrop-blur-sm px-2 py-0.5 text-[10px] font-bold text-yellow-400 border border-yellow-400/30">
-                IRON CAGE
-              </span>
+              <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-[#0C1220] to-transparent" />
             </div>
-            <div className="p-4">
-              <div className="flex items-center justify-between">
-                <h3 className="font-black text-white text-base tracking-tight">Lone Wolf (1v1 / 2v2)</h3>
-                <span className="text-[11px] font-bold text-amber-400">Headshot Arena</span>
+
+            {/* Content & Metadata */}
+            <div className="flex flex-1 flex-col justify-between p-4 sm:p-5">
+              <div>
+                <div className="flex flex-wrap items-center justify-between gap-1.5 mb-2.5">
+                  <span className="inline-flex items-center gap-1 rounded-md bg-yellow-400/15 border border-yellow-400/30 px-2.5 py-0.5 text-[10px] sm:text-xs font-black uppercase text-yellow-300">
+                    👑 1V1 / 2V2 DUEL
+                  </span>
+                  <span className="inline-flex items-center rounded-md bg-white/5 border border-white/10 px-2 py-0.5 text-[10px] font-bold text-slate-300">
+                    IRON CAGE
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <h3 className="font-black text-white text-base sm:text-lg tracking-tight">Lone Wolf (1v1 / 2v2)</h3>
+                  <span className="text-[11px] font-extrabold text-yellow-400 bg-yellow-400/10 px-2 py-0.5 rounded-full border border-yellow-400/20">
+                    Headshot Arena
+                  </span>
+                </div>
+                <p className="mt-2 text-xs text-slate-400 leading-relaxed">
+                  Iron Cage 1v1 duel arena. Prove your aim, fast Gloo Walls, and headshot skills without interference.
+                </p>
               </div>
-              <p className="mt-1.5 text-xs text-slate-400 line-clamp-2">
-                Iron Cage 1v1 duel arena. Prove your aim, fast Gloo Walls, and headshot skills without interference.
-              </p>
-              <div className="mt-4 flex items-center justify-between text-xs font-bold text-amber-400 border-t border-white/5 pt-3">
-                <span className="text-slate-300">Head-to-Head Duel</span>
+
+              <div className="mt-4 flex items-center justify-between text-xs font-bold border-t border-white/5 pt-3">
+                <span className="text-slate-400 flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-yellow-400 animate-pulse" />
+                  Head-to-Head Duel
+                </span>
                 <span className="flex items-center gap-1 text-amber-400 font-extrabold group-hover:translate-x-1 transition">
                   PLAY NOW →
                 </span>
