@@ -84,9 +84,9 @@ export default function RoleLogin({ role = 'USER' }) {
             <input className="input" type="email" placeholder={`${copy.title} email`} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
             <input className="input" type="password" placeholder="Password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />
             <Alert type="error">{error}</Alert>
-            <button className="btn-primary w-full py-3" disabled={loading}>{loading ? 'Checking...' : copy.title}</button>
+            <button className="btn-fire w-full py-3 shadow-glow-fire" disabled={loading}>{loading ? 'Checking...' : copy.title}</button>
           </div>
-          {role === 'USER' && <p className="mt-5 text-center text-sm text-secondary">New player? <Link className="text-gold" to="/register">Register</Link></p>}
+          {role === 'USER' && <p className="mt-5 text-center text-sm text-secondary">New player? <Link className="text-fire-400 font-bold hover:underline" to="/register">Register Free Fire Account</Link></p>}
         </form>
       </section>
     </main>

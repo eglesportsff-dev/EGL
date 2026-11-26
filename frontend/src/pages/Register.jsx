@@ -90,9 +90,9 @@ export default function Register() {
               <input className="input" placeholder="Gaming UID - cannot be changed later" value={form.gameUid} onChange={(e) => setForm({ ...form, gameUid: e.target.value })} required disabled={loading} />
               <label className="block rounded-xl border border-white/10 bg-bg/80 px-3 py-3 text-sm text-slate-300">
                 Upload game profile screenshot
-                <input className="mt-2 block w-full text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-primary file:px-3 file:py-2 file:text-white" type="file" accept="image/*" onChange={(e) => handlePhoto(e.target.files?.[0])} required disabled={loading} />
+                <input className="mt-2 block w-full text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-fire-500 file:px-3 file:py-2 file:text-white file:font-bold" type="file" accept="image/*" onChange={(e) => handlePhoto(e.target.files?.[0])} required disabled={loading} />
               </label>
-              {form.profileScreenshotUrl && <div className="rounded-xl border border-primary/30 bg-primary/10 p-2 text-xs text-gold">Photo selected for verification</div>}
+              {form.profileScreenshotUrl && <div className="rounded-xl border border-fire-500/30 bg-fire-500/10 p-2 text-xs text-amber-300 font-bold">✓ Screenshot selected for Free Fire UID verification</div>}
               <input className="input" placeholder="UPI ID" value={form.upiId} onChange={(e) => setForm({ ...form, upiId: e.target.value })} required disabled={loading} />
               <input className="input" type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required disabled={loading} />
               <input className="input" type="password" placeholder="Password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required disabled={loading} />
@@ -103,7 +103,7 @@ export default function Register() {
           )}
           <Alert>{message}</Alert>
           <Alert type="error">{error}</Alert>
-          <button className="btn-primary w-full py-3 flex items-center justify-center gap-2" disabled={loading}>
+          <button className="btn-fire w-full py-3 flex items-center justify-center gap-2 shadow-glow-fire font-black" disabled={loading}>
             {loading ? (
               <>
                 <svg className="h-5 w-5 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -118,7 +118,7 @@ export default function Register() {
           </button>
         </div>
         <p className="mt-5 text-center text-sm text-secondary">
-          Ready? <Link className="text-ember" to="/login">Login</Link>
+          Ready? <Link className="text-fire-400 font-bold hover:underline" to="/login">Login to Arena</Link>
         </p>
       </form>
     </main>
