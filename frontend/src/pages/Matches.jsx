@@ -476,7 +476,7 @@ export default function Matches() {
         <header className="panel bg-gradient-to-r from-primary/20 via-card to-bg">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="text-sm font-bold text-gold">EliteGrindLeague Matches</p>
+              <p className="text-sm font-bold text-gold">Nexus eSports Matches</p>
               <h1 className="mt-2 text-3xl font-black">Register for scheduled rooms</h1>
               <p className="mt-2 text-sm text-secondary">Matches created by controllers appear here as cards. Wallet balance is checked when you join.</p>
             </div>

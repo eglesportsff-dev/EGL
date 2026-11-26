@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import logo from '../assets/egl-logo.jpeg';
+import logo from '../assets/nexus-logo.jpg';
 import ffBrMode from '../assets/ff-br-mode.jpg';
 import ffCsMode from '../assets/ff-cs-mode.jpg';
 import ff1vs1 from '../assets/ff-1vs1.jpg';
@@ -103,7 +103,7 @@ export default function Landing() {
             <div className="relative">
               <img
                 src={logo}
-                alt="EGL eSports"
+                alt="Nexus eSports"
                 className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl object-cover border border-fire-500/40 shadow-glow-fire transition duration-300 group-hover:scale-105"
               />
               <span className="absolute -bottom-1 -right-1 flex h-3 w-3">
@@ -113,7 +113,7 @@ export default function Landing() {
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="text-lg sm:text-xl font-black tracking-tight text-white">EGL</span>
+                <span className="text-lg sm:text-xl font-black tracking-tight text-white">Nexus</span>
                 <span className="bg-gradient-to-r from-amber-400 via-fire-500 to-red-500 bg-clip-text text-transparent text-lg sm:text-xl font-black">
                   eSports
                 </span>
@@ -433,7 +433,7 @@ export default function Landing() {
                   <span className="text-xs text-slate-400">• Free Fire Updates</span>
                 </div>
                 <h3 className="mt-1.5 text-lg sm:text-2xl font-black text-white">
-                  Join the Official EGL Free Fire Telegram Channel
+                  Join the Official Nexus Free Fire Telegram Channel
                 </h3>
                 <p className="mt-1 text-xs sm:text-sm text-slate-300 max-w-2xl">
                   Get instant Room ID drops, password alerts, bracket schedules, and live tournament announcements on <b className="text-sky-300 font-mono">@EliteGrindeSports</b>!
@@ -600,10 +600,10 @@ export default function Landing() {
           {/* Col 1: Brand */}
           <div className="space-y-3">
             <div className="flex items-center gap-3">
-              <img src={logo} alt="EGL" className="h-10 w-10 rounded-xl object-cover border border-fire-500/30" />
+              <img src={logo} alt="Nexus" className="h-10 w-10 rounded-xl object-cover border border-fire-500/30" />
               <div>
                 <h3 className="text-base font-black text-white">
-                  EGL <span className="text-fire-500">eSports</span>
+                  Nexus <span className="text-fire-500">eSports</span>
                 </h3>
                 <p className="text-[10px] text-slate-400 uppercase tracking-wider font-bold">
                   Free Fire eSports Arena
@@ -662,7 +662,7 @@ export default function Landing() {
 
         {/* Copyright */}
         <div className="border-t border-white/5 py-6 text-center text-[11px] text-slate-500">
-          <p>© 2026 EGL eSports • EliteGrindLeague. Dedicated to Free Fire eSports.</p>
+          <p>© 2026 Nexus eSports. Dedicated to Free Fire eSports.</p>
         </div>
       </footer>
     </main>

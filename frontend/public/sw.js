@@ -3,9 +3,9 @@ self.addEventListener('push', function(event) {
     try {
       const payload = event.data.json();
       const options = {
-        body: payload.body || 'New update from EGL eSports!',
-        icon: '/assets/egl-logo-CWlMsNld.jpeg',
-        badge: '/assets/egl-logo-CWlMsNld.jpeg',
+        body: payload.body || 'New update from Nexus eSports!',
+        icon: '/nexus-logo.jpg',
+        badge: '/nexus-logo.jpg',
         vibrate: [100, 50, 100],
         data: {
           url: payload.url || '/'
@@ -13,7 +13,7 @@ self.addEventListener('push', function(event) {
       };
 
       event.waitUntil(
-        self.registration.showNotification(payload.title || 'EGL eSports', options)
+        self.registration.showNotification(payload.title || 'Nexus eSports', options)
       );
     } catch (e) {
       // Fallback if data is not JSON
@@ -23,7 +23,7 @@ self.addEventListener('push', function(event) {
         vibrate: [100, 50, 100]
       };
       event.waitUntil(
-        self.registration.showNotification('EGL eSports', options)
+        self.registration.showNotification('Nexus eSports', options)
       );
     }
   }

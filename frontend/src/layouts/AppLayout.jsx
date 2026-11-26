@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getConversations, getNotifications } from '../services/tournamentService';
-import logo from '../assets/egl-logo.jpeg';
+import logo from '../assets/nexus-logo.jpg';
 import {
   LayoutDashboard,
   Swords,
@@ -168,12 +168,12 @@ export default function AppLayout() {
     <>
       <NavLink to="/" className="group flex items-center gap-3 px-2 py-1 font-black text-white" onClick={() => setSidebarOpen(false)}>
         <div className="relative">
-          <img className="h-11 w-11 rounded-xl object-cover ring-2 ring-fire-500/50 shadow-glow-fire transition group-hover:scale-105" src={logo} alt="EGL eSports" />
+          <img className="h-11 w-11 rounded-xl object-cover ring-2 ring-fire-500/50 shadow-glow-fire transition group-hover:scale-105" src={logo} alt="Nexus eSports" />
           <span className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-fire-500 text-[9px] text-white">🔥</span>
         </div>
         <div>
-          <div className="flex items-center gap-1 leading-none">
-            <span className="text-base tracking-tight font-black">EGL</span>
+          <div className="flex items-center gap-1.5 leading-none">
+            <span className="text-base tracking-tight font-black">Nexus</span>
             <span className="text-base font-black text-fire-500">eSports</span>
           </div>
           <span className="mt-1 block text-[10px] font-bold uppercase tracking-widest text-amber-400/90">Free Fire Arena</span>
@@ -249,8 +249,8 @@ export default function AppLayout() {
               <MenuIcon />
             </button>
             <div className="flex min-w-0 flex-1 items-center gap-2 font-black text-white lg:hidden">
-              <img className="h-8 w-8 rounded-lg object-cover ring-1 ring-fire-500/40" src={logo} alt="EGL eSports" />
-              <span className="truncate">EGL <span className="text-fire-500">eSports</span></span>
+              <img className="h-8 w-8 rounded-lg object-cover ring-1 ring-fire-500/40" src={logo} alt="Nexus eSports" />
+              <span className="truncate">Nexus <span className="text-fire-500">eSports</span></span>
             </div>
 
             {/* Desktop Center Live Badge */}

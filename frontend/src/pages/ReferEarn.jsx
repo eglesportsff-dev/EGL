@@ -35,7 +35,7 @@ export default function ReferEarn() {
         <p className="text-sm font-bold text-gold uppercase tracking-wider">Refer & Earn Program</p>
         <h1 className="mt-2 text-3xl font-black text-white sm:text-4xl">Invite Friends & Earn Cash</h1>
         <p className="mx-auto mt-3 max-w-xl text-sm text-slate-300">
-          Share the excitement of EGL eSports with your friends. Get rewarded when they sign up and start playing matches!
+          Share the excitement of Nexus eSports with your friends. Get rewarded when they sign up and start playing matches!
         </p>
       </section>
 

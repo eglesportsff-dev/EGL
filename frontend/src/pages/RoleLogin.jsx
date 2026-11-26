@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import Alert from '../components/Alert';
 import { useAuth } from '../context/AuthContext';
-import logo from '../assets/egl-logo.jpeg';
+import logo from '../assets/nexus-logo.jpg';
 
 
 const roleCopy = {
@@ -68,8 +68,8 @@ export default function RoleLogin({ role = 'USER' }) {
       <section className="grid w-full max-w-5xl overflow-hidden rounded-[28px] border border-white/10 bg-card/75 shadow-glow backdrop-blur md:grid-cols-[1fr_.9fr]">
         <div className="p-7 sm:p-10">
           <Link to="/" className="inline-flex items-center gap-3 text-lg font-black">
-            <img className="h-12 w-12 rounded-2xl object-cover shadow-glow" src={logo} alt="EGL eSports" />
-            EGL eSports
+            <img className="h-12 w-12 rounded-2xl object-cover shadow-glow" src={logo} alt="Nexus eSports" />
+            Nexus eSports
           </Link>
           <div className="mt-16">
             <p className="text-sm font-bold text-gold">{copy.eyebrow}</p>

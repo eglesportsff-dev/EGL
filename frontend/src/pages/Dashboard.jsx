@@ -482,7 +482,7 @@ export default function Dashboard() {
                 <span className="text-xs text-slate-400">• Free Fire Updates</span>
               </div>
               <h3 className="mt-1 text-base sm:text-lg font-black text-white">
-                Join the Official EGL Free Fire Telegram Channel
+                Join the Official Nexus Free Fire Telegram Channel
               </h3>
               <p className="mt-0.5 text-xs text-slate-300 max-w-2xl">
                 Get instant Room ID, Password drops, tournament schedules, and live bracket updates directly on <b className="text-sky-300 font-mono">@EliteGrindeSports</b>!

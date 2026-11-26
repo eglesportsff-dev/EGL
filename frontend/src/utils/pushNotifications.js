@@ -63,7 +63,7 @@ export async function subscribeToPushNotifications() {
     };
 
     await api.post('/push/subscribe', payload);
-    console.log('Successfully registered Web Push notifications with EGL backend.');
+    console.log('Successfully registered Web Push notifications with Nexus backend.');
 
   } catch (error) {
     console.error('Failed to subscribe user to Web Push:', error);
