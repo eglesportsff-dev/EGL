@@ -18,7 +18,6 @@ import com.freefire.tournament.repository.MatchParticipantRepository;
 import com.freefire.tournament.repository.MatchRepository;
 import com.freefire.tournament.repository.MasterControllerProfileRepository;
 import com.freefire.tournament.repository.TeamRepository;
-import com.freefire.tournament.repository.UserNotificationRepository;
 import com.freefire.tournament.repository.UserRepository;
 import com.freefire.tournament.repository.WalletTransactionRepository;
 import com.freefire.tournament.repository.WithdrawRequestRepository;
@@ -43,14 +42,12 @@ public class MasterService {
     private final UserRepository users;
     private final TeamRepository teams;
     private final WalletTransactionRepository transactions;
-    private final UserNotificationRepository userNotifications;
 
     public MasterService(DepositRequestRepository deposits, WithdrawRequestRepository withdrawals,
             MasterControllerProfileRepository masters, ControllerProfileRepository controllers,
             ControllerReviewRepository controllerReviews, MatchRepository matches,
             MatchParticipantRepository participants, UserRepository users,
-            TeamRepository teams, WalletTransactionRepository transactions,
-            UserNotificationRepository userNotifications) {
+            TeamRepository teams, WalletTransactionRepository transactions) {
         this.deposits = deposits;
         this.withdrawals = withdrawals;
         this.masters = masters;
@@ -61,7 +58,6 @@ public class MasterService {
         this.users = users;
         this.teams = teams;
         this.transactions = transactions;
-        this.userNotifications = userNotifications;
     }
 
     @Transactional(readOnly = true)
@@ -162,48 +158,6 @@ public class MasterService {
 
         return new SeasonResetSummary(playerUsers.size(), allTeams.size(), 0, 0,
                 0, 0, "Leaderboard reset successfully. Player winning points and team points were cleared.");
-    }
-
-    @Transactional
-    public SeasonResetSummary resetAllPlayerData() {
-        var playerUsers = users.findByRole(Role.USER);
-        for (User user : playerUsers) {
-            user.setWalletBalance(BigDecimal.ZERO);
-            user.setWinningPoints(BigDecimal.ZERO);
-        }
-        users.saveAll(playerUsers);
-
-        var allTeams = teams.findAll();
-        for (var team : allTeams) {
-            team.setTotalWinningPoints(BigDecimal.ZERO);
-        }
-        teams.saveAll(allTeams);
-
-        long participantsCount = participants.count();
-        participants.deleteAllInBatch();
-
-        long txCount = transactions.count();
-        transactions.deleteAllInBatch();
-
-        long reviewsCount = controllerReviews.count();
-        controllerReviews.deleteAllInBatch();
-
-        long depositsCount = deposits.count();
-        deposits.deleteAllInBatch();
-
-        long withdrawsCount = withdrawals.count();
-        withdrawals.deleteAllInBatch();
-
-        userNotifications.deleteAllInBatch();
-
-        return new SeasonResetSummary(
-                playerUsers.size(),
-                allTeams.size(),
-                0,
-                participantsCount,
-                txCount,
-                reviewsCount,
-                "All player-end data has been reset to zero! Wallet balances (₹0.00), winning points (0), team points, and all transactions/match history were cleared.");
     }
 
     @Transactional
