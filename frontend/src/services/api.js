@@ -17,12 +17,20 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response) {
-      const message = error.response.data?.error || error.response.data?.message || 'Request failed';
+      const data = error.response.data;
+      let message = 'Request failed';
+      if (typeof data === 'string' && data.trim()) {
+        message = data;
+      } else if (data && typeof data === 'object') {
+        message = data.error || data.message || (data.status ? `Server error (status ${data.status})` : 'Request failed');
+      } else if (error.response.status) {
+        message = `Server error (${error.response.status})`;
+      }
       return Promise.reject(new Error(message));
     }
 
     if (error.request) {
-      return Promise.reject(new Error(`Cannot connect to the backend. Please check the API URL: ${apiBaseUrl}.`));
+      return Promise.reject(new Error(`Cannot connect to the backend. Please check your network or server status.`));
     }
 
     return Promise.reject(new Error(error.message || 'Request failed'));
