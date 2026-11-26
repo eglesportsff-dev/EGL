@@ -54,11 +54,21 @@ public class EmailService {
     }
 
     public void sendOtp(String to, String otp) {
-        System.out.println("\nEmailService: Preparing to send OTP to " + to + " using sender " + fromAddress);
+        sendOtpEmail(to, otp, "Nexus Tournament OTP Verification", "Registration Verification",
+                "Your registration verification code is:", "REGISTRATION OTP");
+    }
 
-        // Always log OTP to server console so admins / developers can see it even if
-        // mail provider is down
-        logConsoleOtp(to, otp);
+    public void sendPasswordResetOtp(String to, String otp) {
+        sendOtpEmail(to, otp, "Nexus Tournament - Password Reset OTP", "Password Reset Request",
+                "Your password reset verification code is:", "PASSWORD RESET OTP");
+    }
+
+    private void sendOtpEmail(String to, String otp, String subject, String headerSubtitle,
+                              String instructionText, String consoleLabel) {
+        System.out.println("\nEmailService: Preparing to send " + consoleLabel + " to " + to + " using sender " + fromAddress);
+
+        // Always log OTP to server console so admins / developers can see it even if mail provider is down
+        logConsoleOtp(to, otp, consoleLabel);
 
         if (apiKey.isBlank() && mailUsername.isBlank()) {
             lastStatus = "FAILED: No Brevo API Key (MAIL_PASSWORD / BREVO_API_KEY) or SMTP Username configured in environment";
@@ -66,20 +76,18 @@ public class EmailService {
             return;
         }
 
-        // Run asynchronously so user registration request is not blocked
+        // Run asynchronously so user request is not blocked
         CompletableFuture.runAsync(() -> {
             boolean sent = false;
 
-            // Strategy 1: If key starts with "xkeysib-" or if not an SMTP key, attempt
-            // Brevo REST API
+            // Strategy 1: If key starts with "xkeysib-" or if not an SMTP key, attempt Brevo REST API
             if (apiKey.startsWith("xkeysib-") || (!apiKey.startsWith("xsmtpsib-") && !apiKey.isBlank())) {
-                sent = sendViaBrevoRestApi(to, otp);
+                sent = sendViaBrevoRestApi(to, otp, subject, headerSubtitle, instructionText);
             }
 
-            // Strategy 2: If Brevo REST API failed or key is an SMTP key ("xsmtpsib-"),
-            // attempt SMTP relay
+            // Strategy 2: If Brevo REST API failed or key is an SMTP key ("xsmtpsib-"), attempt SMTP relay
             if (!sent && mailSender != null && (!apiKey.isBlank() || !mailUsername.isBlank())) {
-                sent = sendViaSmtpRelay(to, otp);
+                sent = sendViaSmtpRelay(to, otp, subject, instructionText);
             }
 
             if (!sent) {
@@ -89,21 +97,22 @@ public class EmailService {
         });
     }
 
-    private boolean sendViaBrevoRestApi(String to, String otp) {
+    private boolean sendViaBrevoRestApi(String to, String otp, String subject, String headerSubtitle, String instructionText) {
         try {
             System.out.println(
                     "EmailService: Attempting delivery via Brevo REST API (https://api.brevo.com/v3/smtp/email)...");
             String jsonPayload = "{"
-                    + "\"sender\":{\"name\":\"EGL eSports\",\"email\":\"" + fromAddress + "\"},"
+                    + "\"sender\":{\"name\":\"Nexus eSports\",\"email\":\"" + fromAddress + "\"},"
                     + "\"to\":[{\"email\":\"" + to + "\"}],"
-                    + "\"subject\":\"EGL Tournament OTP Verification\","
+                    + "\"subject\":\"" + subject + "\","
                     + "\"htmlContent\":\"<div style='font-family:sans-serif;padding:24px;background:#0d1222;color:#ffffff;border-radius:12px;max-width:500px;'>"
-                    + "<h2 style='color:#FF5500;margin-top:0;'>EGL Free Fire eSports</h2>"
-                    + "<p style='color:#94a3b8;'>Your registration verification code is:</p>"
+                    + "<h2 style='color:#FF5500;margin-top:0;'>Nexus Free Fire eSports</h2>"
+                    + "<p style='color:#f59e0b;font-weight:bold;margin-bottom:4px;'>" + headerSubtitle + "</p>"
+                    + "<p style='color:#94a3b8;'>" + instructionText + "</p>"
                     + "<div style='font-size:36px;font-weight:900;letter-spacing:6px;color:#FFB800;background:#170e08;padding:16px;border-radius:8px;text-align:center;border:1px solid rgba(255,85,0,0.3);margin:16px 0;'>"
                     + otp + "</div>"
                     + "<p style='color:#94a3b8;font-size:12px;'>This OTP expires in 10 minutes. For your security, do not share this code with anyone.</p>"
-                    + "<p style='color:#64748b;font-size:11px;margin-bottom:0;'>© EGL eSports Arena. Official Free Fire Tournament Circuit.</p>"
+                    + "<p style='color:#64748b;font-size:11px;margin-bottom:0;'>© Nexus eSports Arena. Official Free Fire Tournament Circuit.</p>"
                     + "</div>\""
                     + "}";
 
@@ -151,16 +160,16 @@ public class EmailService {
         }
     }
 
-    private boolean sendViaSmtpRelay(String to, String otp) {
+    private boolean sendViaSmtpRelay(String to, String otp, String subject, String instructionText) {
         try {
             System.out
                     .println("EmailService: Attempting delivery via SMTP Relay (" + mailHost + ":" + mailPort + ")...");
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(fromAddress);
             message.setTo(to);
-            message.setSubject("EGL Tournament OTP Verification");
-            message.setText("Your tournament registration OTP is: " + otp
-                    + "\n\nThis OTP expires in 10 minutes.\nDo not share this code.\n\nEGL eSports Arena");
+            message.setSubject(subject);
+            message.setText(instructionText + " " + otp
+                    + "\n\nThis OTP expires in 10 minutes.\nDo not share this code.\n\nNexus eSports Arena");
             mailSender.send(message);
             lastStatus = "SUCCESS: Delivered via SMTP Relay (" + mailHost + ")";
             lastError = null;
@@ -174,9 +183,9 @@ public class EmailService {
         }
     }
 
-    private void logConsoleOtp(String to, String otp) {
+    private void logConsoleOtp(String to, String otp, String label) {
         System.out.println("\n==================================================");
-        System.out.println("REGISTRATION OTP FOR: " + to);
+        System.out.println(label + " FOR: " + to);
         System.out.println("OTP CODE IS: " + otp);
         System.out.println("SENDER: " + fromAddress);
         System.out.println("==================================================\n");

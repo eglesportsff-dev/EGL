@@ -20,6 +20,14 @@ public class AuthDtos {
 
     public record LoginRequest(@Email @NotBlank String email, @NotBlank String password) {}
 
+    public record ForgotPasswordRequest(@Email @NotBlank String email) {}
+
+    public record ResetPasswordRequest(
+            @Email @NotBlank String email,
+            @NotBlank String otp,
+            @NotBlank @Size(min = 8, max = 80) String newPassword
+    ) {}
+
     public record AuthResponse(String token, Long id, String uid, String username, String gameUid,
                                String profileScreenshotUrl, String upiId, String email, Role role) {}
 

@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/register", "/api/auth/verify-otp",
-                                "/api/auth/login")
+                                "/api/auth/login", "/api/auth/forgot-password", "/api/auth/reset-password")
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/auth/email-status", "/api/matches", "/api/leaderboard",
                                 "/api/tournaments/updates", "/api/tournament/*/point-table", "/api/players/active",

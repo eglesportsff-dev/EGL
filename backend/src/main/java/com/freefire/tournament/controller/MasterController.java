@@ -33,7 +33,7 @@ public class MasterController {
     private final CurrentUserService currentUser;
 
     public MasterController(WalletService walletService, StaffService staffService, MasterService masterService,
-                            MatchService matchService, CurrentUserService currentUser) {
+            MatchService matchService, CurrentUserService currentUser) {
         this.walletService = walletService;
         this.staffService = staffService;
         this.masterService = masterService;
@@ -77,13 +77,13 @@ public class MasterController {
 
     @GetMapping("/deposits/pending")
     public PagedResponse<PendingDepositRow> pendingDeposits(@RequestParam(defaultValue = "0") int page,
-                                                            @RequestParam(defaultValue = "8") int size) {
+            @RequestParam(defaultValue = "8") int size) {
         return masterService.pendingDeposits(page, size);
     }
 
     @GetMapping("/withdraws/pending")
     public PagedResponse<PendingWithdrawRow> pendingWithdraws(@RequestParam(defaultValue = "0") int page,
-                                                              @RequestParam(defaultValue = "8") int size) {
+            @RequestParam(defaultValue = "8") int size) {
         return masterService.pendingWithdraws(page, size);
     }
 

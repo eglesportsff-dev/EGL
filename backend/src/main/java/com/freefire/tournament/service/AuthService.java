@@ -170,6 +170,44 @@ public class AuthService {
     }
 
     @Transactional
+    public MessageResponse forgotPassword(ForgotPasswordRequest request) {
+        String emailLower = request.email().toLowerCase().trim();
+        User user = users.findByEmail(emailLower)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "No account found with this email"));
+
+        if (!user.isEmailVerified()) {
+            throw new ApiException(HttpStatus.FORBIDDEN, "Account email is not verified yet. Please register or verify first.");
+        }
+
+        String otp = CodeGenerator.otp();
+        user.setOtpHash(otp);
+        user.setOtpExpiresAt(Instant.now().plusSeconds(otpTtlMinutes * 60));
+        users.save(user);
+
+        emailService.sendPasswordResetOtp(user.getEmail(), otp);
+        return new MessageResponse("Password reset OTP sent to your registered email.");
+    }
+
+    @Transactional
+    public MessageResponse resetPassword(ResetPasswordRequest request) {
+        String emailLower = request.email().toLowerCase().trim();
+        User user = users.findByEmail(emailLower)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "No account found with this email"));
+
+        if (user.getOtpExpiresAt() == null || user.getOtpExpiresAt().isBefore(Instant.now())
+                || user.getOtpHash() == null || !user.getOtpHash().equals(request.otp().trim())) {
+            throw new ApiException(HttpStatus.BAD_REQUEST, "Invalid or expired OTP");
+        }
+
+        user.setPasswordHash(encoder.encode(request.newPassword()));
+        user.setOtpHash(null);
+        user.setOtpExpiresAt(null);
+        users.save(user);
+
+        return new MessageResponse("Password reset successfully. You can now login with your new password.");
+    }
+
+    @Transactional
     public User createStaff(String username, String email, String password, Role role) {
         if (role == Role.ADMIN) {
             throw new ApiException(HttpStatus.FORBIDDEN, "Admin accounts are managed by backend startup only");
