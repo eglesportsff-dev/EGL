@@ -193,8 +193,8 @@ export default function AppLayout() {
               to={to}
               onClick={() => setSidebarOpen(false)}
               className={({ isActive }) => `group relative flex items-center gap-3 rounded-xl px-3.5 py-2.5 font-semibold transition-all duration-200 ${isActive
-                  ? 'bg-gradient-to-r from-fire-500/25 via-amber-500/15 to-transparent text-white border-l-[3px] border-fire-500 shadow-glow-fire pl-3'
-                  : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
+                ? 'bg-gradient-to-r from-fire-500/25 via-amber-500/15 to-transparent text-white border-l-[3px] border-fire-500 shadow-glow-fire pl-3'
+                : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
                 }`}
             >
               {({ isActive }) => (
@@ -277,8 +277,8 @@ export default function AppLayout() {
                   aria-label="Notification centre"
                   title="Notification centre"
                   className={({ isActive }) => `relative inline-flex h-9 w-9 items-center justify-center rounded-full border transition ${isActive
-                      ? 'border-fire-500 bg-fire-500/20 text-fire-400 shadow-glow-fire'
-                      : 'border-white/10 bg-white/5 text-slate-200 hover:border-fire-500/50 hover:bg-fire-500/10'
+                    ? 'border-fire-500 bg-fire-500/20 text-fire-400 shadow-glow-fire'
+                    : 'border-white/10 bg-white/5 text-slate-200 hover:border-fire-500/50 hover:bg-fire-500/10'
                     }`}
                 >
                   <BellIcon />

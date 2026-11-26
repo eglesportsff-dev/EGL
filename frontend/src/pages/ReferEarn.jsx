@@ -74,17 +74,17 @@ export default function ReferEarn() {
 
         <div className="panel space-y-5">
           <h2 className="text-lg font-black text-white">Your Referral Details</h2>
-          
+
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-slate-400">Referral Code</label>
             <div className="flex gap-2">
-              <input 
-                className="input font-mono tracking-widest text-gold text-lg py-2.5 font-bold bg-bg/90" 
-                value={referralCode} 
-                readOnly 
+              <input
+                className="input font-mono tracking-widest text-gold text-lg py-2.5 font-bold bg-bg/90"
+                value={referralCode}
+                readOnly
               />
-              <button 
-                onClick={() => copyToClipboard(referralCode, 'code')} 
+              <button
+                onClick={() => copyToClipboard(referralCode, 'code')}
                 className={`btn shrink-0 w-24 ${copiedCode ? 'bg-emerald-600 text-white' : 'btn-ghost'}`}
               >
                 {copiedCode ? 'Copied' : 'Copy'}
@@ -95,13 +95,13 @@ export default function ReferEarn() {
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-slate-400">Invite Link</label>
             <div className="flex gap-2">
-              <input 
-                className="input text-xs py-3 text-slate-300 bg-bg/90" 
-                value={referralLink} 
-                readOnly 
+              <input
+                className="input text-xs py-3 text-slate-300 bg-bg/90"
+                value={referralLink}
+                readOnly
               />
-              <button 
-                onClick={() => copyToClipboard(referralLink, 'link')} 
+              <button
+                onClick={() => copyToClipboard(referralLink, 'link')}
                 className={`btn shrink-0 w-24 ${copiedLink ? 'bg-emerald-600 text-white' : 'btn-ghost'}`}
               >
                 {copiedLink ? 'Copied' : 'Copy'}

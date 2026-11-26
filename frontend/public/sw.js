@@ -1,4 +1,4 @@
-self.addEventListener('push', function(event) {
+self.addEventListener('push', function (event) {
   if (event.data) {
     try {
       const payload = event.data.json();
@@ -29,17 +29,17 @@ self.addEventListener('push', function(event) {
   }
 });
 
-self.addEventListener('notificationclick', function(event) {
+self.addEventListener('notificationclick', function (event) {
   event.notification.close();
-  
+
   // Open the page
   const urlToOpen = event.notification.data?.url || '/';
-  
+
   event.waitUntil(
     clients.matchAll({
       type: 'window',
       includeUncontrolled: true
-    }).then(function(windowClients) {
+    }).then(function (windowClients) {
       for (var i = 0; i < windowClients.length; i++) {
         var client = windowClients[i];
         if (client.url === urlToOpen && 'focus' in client) {

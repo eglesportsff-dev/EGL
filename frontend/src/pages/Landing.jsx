@@ -214,7 +214,7 @@ export default function Landing() {
 
         <div className="relative mx-auto max-w-7xl">
           <div className="grid items-center gap-10 lg:grid-cols-12">
-            
+
             {/* Left Hero Content */}
             <div className="text-center lg:text-left lg:col-span-7 space-y-6">
               {/* Circuit Pill */}
@@ -281,16 +281,16 @@ export default function Landing() {
               <div className="relative w-full max-w-md">
                 {/* Outer Glow Card */}
                 <div className="relative overflow-hidden rounded-3xl border-2 border-fire-500/40 bg-gradient-to-b from-[#170E08] via-[#0E1528] to-[#080D1A] p-3 shadow-glow-fire">
-                  
+
                   {/* Hero Showcase Image */}
-                  <div className="relative aspect-[4/3] sm:aspect-[16/10] w-full overflow-hidden rounded-2xl bg-black">
+                  <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-black">
                     <img
                       src={ffChampions}
                       alt="Free Fire Champions"
-                      className="h-full w-full object-cover object-top transition duration-500 hover:scale-105"
+                      className="h-full w-full object-cover object-center transition duration-500 hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#080D1A] via-black/30 to-transparent" />
-                    
+
                     {/* Live Match Badge */}
                     <div className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-black/80 backdrop-blur-md px-3 py-1 text-[11px] font-black uppercase text-amber-300 border border-fire-500/50">
                       <span className="h-2 w-2 rounded-full bg-fire-500 animate-ping" />
