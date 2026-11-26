@@ -37,11 +37,13 @@ services:
       JWT_EXPIRATION_MINUTES: 1440
       FRONTEND_ORIGIN: http://localhost
       OTP_TTL_MINUTES: 10
-      MAIL_HOST: ${MAIL_HOST:-smtp-relay.brevo.com}
+      MAIL_HOST: ${MAIL_HOST:-smtp.resend.com}
       MAIL_PORT: ${MAIL_PORT:-587}
-      MAIL_USERNAME: ${MAIL_USERNAME}
-      MAIL_PASSWORD: ${MAIL_PASSWORD}
-      MAIL_FROM: ${MAIL_FROM}
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      MAIL_FROM: ${MAIL_FROM:-}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      RESEND_FROM: ${RESEND_FROM:-}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-lavkush01maurya@gmail.com}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-Lav#2004}
       ADMIN_USERNAME: ${ADMIN_USERNAME:-Lavkush}

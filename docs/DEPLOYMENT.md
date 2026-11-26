@@ -37,11 +37,8 @@ This is the easiest way to deploy the application with free-tier options and aut
    - `DATABASE_PASSWORD`: *(Your Supabase database password)*
    - `JWT_SECRET`: *(A secure 64+ character random string)*
    - `FRONTEND_ORIGIN`: `https://your-frontend.vercel.app` *(update this to your Vercel URL once the frontend is deployed)*
-   - `MAIL_HOST`: `smtp-relay.brevo.com`
-   - `MAIL_PORT`: `587`
-   - `MAIL_USERNAME`: `ac2e9d001@smtp-brevo.com`
-   - `MAIL_PASSWORD`: *(Your Brevo SMTP key from your local .env)*
-   - `MAIL_FROM`: `eglesportsff@gmail.com`
+   - `RESEND_API_KEY`: *(Your Resend API key starting with `re_...` from resend.com/api-keys)*
+   - `RESEND_FROM`: *(Optional: `EGL eSports <noreply@yourdomain.com>` after verifying your domain in Resend; defaults to `EGL eSports <onboarding@resend.dev>` for testing)*
    - `ADMIN_EMAIL`: `lavkush01maurya@gmail.com`
    - `ADMIN_PASSWORD`: `Lav#2004`
    - `ADMIN_USERNAME`: `Lavkush`
