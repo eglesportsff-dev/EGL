@@ -8,7 +8,7 @@ import ff1vs1 from '../assets/ff-1vs1.jpg';
 import ffChampions from '../assets/ff-champions.jpg';
 import ffGameplay from '../assets/ff-gameplay.jpg';
 import ffTelegramBadge from '../assets/ff-telegram-badge.svg';
-import eglTelegramQr from '../assets/egl-telegram-qr.jpg';
+import telegramQr from '../assets/telegram-qr.png';
 import {
   Menu,
   X,
@@ -436,14 +436,14 @@ export default function Landing() {
                   Join the Official Nexus Free Fire Telegram Channel
                 </h3>
                 <p className="mt-1 text-xs sm:text-sm text-slate-300 max-w-2xl">
-                  Get instant Room ID drops, password alerts, bracket schedules, and live tournament announcements on <b className="text-sky-300 font-mono">@EliteGrindeSports</b>!
+                  Get instant Room ID drops, password alerts, bracket schedules, and live tournament announcements on <b className="text-sky-300 font-mono">Nexus Telegram Channel</b>!
                 </p>
               </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-3 shrink-0">
               <a
-                href="https://t.me/EliteGrindeSports"
+                href="https://t.me/+qgPNUKGt9m5mOTZl"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 px-6 py-3 text-sm font-black text-white shadow-[0_0_20px_rgba(14,165,233,0.4)] transition hover:brightness-110 active:scale-95"
@@ -468,22 +468,22 @@ export default function Landing() {
           {showQrDrawer && (
             <div className="relative mt-6 pt-5 border-t border-sky-500/20 flex flex-col sm:flex-row items-center gap-5 bg-black/50 rounded-2xl p-4 sm:p-5">
               <img
-                src={eglTelegramQr}
-                alt="Scan to join @EliteGrindeSports on Telegram"
+                src={telegramQr}
+                alt="Scan to join Nexus on Telegram"
                 className="h-36 w-36 rounded-xl border-2 border-sky-500/40 shadow-glow bg-white p-1"
               />
               <div className="text-center sm:text-left space-y-1">
                 <p className="text-base font-black text-white">Scan with phone camera</p>
                 <p className="text-xs sm:text-sm text-slate-300">
-                  Instantly opens <b>t.me/EliteGrindeSports</b> on your phone Telegram app.
+                  Instantly opens the <b>Nexus Free Fire</b> channel invite on your phone Telegram app.
                 </p>
                 <a
-                  href="https://t.me/EliteGrindeSports"
+                  href="https://t.me/+qgPNUKGt9m5mOTZl"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs sm:text-sm text-sky-400 font-mono font-bold hover:underline inline-block mt-1"
                 >
-                  t.me/EliteGrindeSports →
+                  Join Nexus Telegram →
                 </a>
               </div>
             </div>
@@ -645,13 +645,13 @@ export default function Landing() {
             <div className="mt-3 space-y-2 text-xs text-slate-400">
               <p className="font-bold text-slate-300">Join our official channel:</p>
               <a
-                href="https://t.me/EliteGrindeSports"
+                href="https://t.me/+qgPNUKGt9m5mOTZl"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 rounded-lg bg-sky-500/15 border border-sky-500/30 px-3 py-1.5 text-xs font-bold text-sky-300 hover:bg-sky-500/25 transition"
               >
                 <Send className="h-3 w-3" />
-                <span>t.me/EliteGrindeSports</span>
+                <span>Nexus Telegram Channel</span>
               </a>
               <p className="text-[11px] text-slate-500 pt-1">
                 Room ID drops & live bracket notifications.
