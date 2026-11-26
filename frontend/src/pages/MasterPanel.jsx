@@ -4,7 +4,7 @@ import Alert from '../components/Alert';
 import StatCard from '../components/StatCard';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
-import { getPendingDeposits, getPendingWithdraws, getStats, resetSeasonData, updateManualPoints, updatePaymentQr } from '../services/tournamentService';
+import { getPendingDeposits, getPendingWithdraws, getStats, resetSeasonData, resetAllPlayerData, updateManualPoints, updatePaymentQr } from '../services/tournamentService';
 import { money } from '../utils/format';
 
 
@@ -21,6 +21,8 @@ export default function MasterPanel() {
   });
   const [resetConfirm, setResetConfirm] = useState('');
   const [resetting, setResetting] = useState(false);
+  const [resetAllConfirm, setResetAllConfirm] = useState('');
+  const [resettingAll, setResettingAll] = useState(false);
   const [manualPoints, setManualPoints] = useState({ playerUid: '', points: '' });
   const [pointsSaving, setPointsSaving] = useState(false);
   const [message, setMessage] = useState('');
@@ -90,6 +92,21 @@ export default function MasterPanel() {
       setMessage(err.message);
     } finally {
       setResetting(false);
+    }
+  };
+
+  const resetAllToZero = async () => {
+    if (resetAllConfirm !== 'RESET ZERO') return;
+    setResettingAll(true);
+    try {
+      const res = await resetAllPlayerData();
+      setResetAllConfirm('');
+      setMessage(`${res.message} Players reset: ${res.usersReset}. Teams reset: ${res.teamsReset}.`);
+      loadStats().catch(() => {});
+    } catch (err) {
+      setMessage(err.message);
+    } finally {
+      setResettingAll(false);
     }
   };
 
@@ -176,13 +193,43 @@ export default function MasterPanel() {
           {pointsSaving ? 'Updating...' : 'Update Points'}
         </button>
       </form>
-      <div className="panel space-y-3 border-red-500/30">
+      {/* FULL RESET ALL TO ZERO */}
+      <div className="panel space-y-4 border-2 border-red-500/50 bg-gradient-to-br from-red-950/30 via-[#100C14] to-card/90 shadow-[0_0_30px_rgba(239,68,68,0.2)]">
         <div>
-          <p className="text-sm font-bold text-red-200">Master Reset</p>
-          <h2 className="mt-1 text-xl font-black">Reset winning points and leaderboard</h2>
-          <p className="mt-2 text-sm leading-6 text-secondary">
-            This clears only player winning points and team leaderboard points. Matches, joined match records,
-            controller review history, wallet balances, users, deposits, and withdraw requests stay safe.
+          <div className="inline-flex items-center gap-2 rounded-full bg-red-500/20 px-3 py-1 text-xs font-black uppercase text-red-400 border border-red-500/40">
+            <span>Critical Master Control</span>
+          </div>
+          <h2 className="mt-2 text-2xl font-black text-white">Reset All Player Data to Zero</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-300">
+            Resets all player data provided from master to player end down to <b>zero</b>:
+            sets all player wallet balances to <b className="text-amber-400 font-mono">₹0.00</b>, winning points to <b className="text-amber-400 font-mono">0</b>, team leaderboard points to <b className="text-amber-400 font-mono">0</b>, and completely clears wallet transactions, match registrations, and deposit/withdrawal queues.
+          </p>
+        </div>
+        <div className="grid gap-3 md:grid-cols-[1fr_auto]">
+          <input
+            className="input border-red-500/40 focus:border-red-400"
+            placeholder="Type RESET ZERO to enable"
+            value={resetAllConfirm}
+            onChange={(e) => setResetAllConfirm(e.target.value)}
+          />
+          <button
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-red-600 to-rose-700 px-6 py-3 text-sm font-black text-white shadow-[0_0_20px_rgba(239,68,68,0.4)] transition hover:brightness-110 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+            type="button"
+            disabled={resetAllConfirm !== 'RESET ZERO' || resettingAll}
+            onClick={resetAllToZero}
+          >
+            {resettingAll ? 'Resetting All to Zero...' : 'RESET ALL TO ZERO'}
+          </button>
+        </div>
+      </div>
+
+      {/* LEADERBOARD POINTS ONLY RESET */}
+      <div className="panel space-y-3 border-white/10 bg-card/60">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Leaderboard Season Reset</p>
+          <h2 className="mt-1 text-lg font-black text-white">Reset Winning Points Only</h2>
+          <p className="mt-1 text-xs leading-5 text-secondary">
+            Clears only player winning points and team leaderboard points. Wallet balances, matches, deposits, and withdraw requests stay untouched.
           </p>
         </div>
         <div className="grid gap-3 md:grid-cols-[1fr_auto]">
@@ -193,12 +240,12 @@ export default function MasterPanel() {
             onChange={(e) => setResetConfirm(e.target.value)}
           />
           <button
-            className="btn-ghost border-red-500/40 text-red-100 hover:border-red-400 hover:bg-red-500/10"
+            className="btn-ghost border-white/20 text-slate-200 hover:border-amber-400 hover:bg-amber-500/10"
             type="button"
             disabled={resetConfirm !== 'RESET' || resetting}
             onClick={resetSeason}
           >
-            {resetting ? 'Resetting...' : 'MASTER RESET'}
+            {resetting ? 'Resetting...' : 'RESET LEADERBOARD ONLY'}
           </button>
         </div>
       </div>

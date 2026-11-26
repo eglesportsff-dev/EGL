@@ -37,6 +37,7 @@ export const markNotificationsRead = () => api.post('/notifications/read').then(
 export const getMasterMatches = (status) => api.get(`/master/matches?status=${status}`).then((r) => r.data);
 export const getMasterControllers = () => api.get('/master/controllers').then((r) => r.data);
 export const resetSeasonData = () => api.post('/master/reset-season').then((r) => r.data);
+export const resetAllPlayerData = () => api.post('/master/reset-player-data').then((r) => r.data);
 export const updateManualPoints = (payload) => api.post('/master/manual-points', payload).then((r) => r.data);
 export const markMatchDone = (matchId) => api.post(`/controller/matches/${matchId}/done`).then((r) => r.data);
 export const deleteControllerMatch = (matchId) => api.delete(`/controller/matches/${matchId}`).then((r) => r.data);

@@ -102,6 +102,11 @@ public class MasterController {
         return masterService.resetSeasonData();
     }
 
+    @PostMapping("/reset-player-data")
+    public SeasonResetSummary resetPlayerData() {
+        return masterService.resetAllPlayerData();
+    }
+
     @PostMapping("/manual-points")
     public MessageResponse manualPoints(@Valid @RequestBody ManualPointsRequest request) {
         return masterService.updateManualPoints(request);
