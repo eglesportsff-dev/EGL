@@ -96,13 +96,14 @@ export default function MasterPanel() {
   };
 
   const resetAllToZero = async () => {
-    if (resetAllConfirm !== 'RESET ZERO') return;
+    const input = resetAllConfirm.trim().toUpperCase();
+    if (input !== 'RESET' && input !== 'RESET ZERO') return;
     setResettingAll(true);
     try {
       const res = await resetAllPlayerData();
       setResetAllConfirm('');
-      setMessage(`${res.message} Players reset: ${res.usersReset}. Teams reset: ${res.teamsReset}.`);
-      loadStats().catch(() => {});
+      setMessage(`${res.message} Reset ${res.usersReset} player balances/points to zero. Preserved all user accounts!`);
+      await loadStats();
     } catch (err) {
       setMessage(err.message);
     } finally {
@@ -144,6 +145,57 @@ export default function MasterPanel() {
         <StatCard label="Pending Deposits" value={stats.pendingDeposits} />
         <StatCard label="Pending Withdraws" value={stats.pendingWithdraws} />
         <StatCard label="Reward Distribution" value={money(stats.rewardDistribution)} />
+      </section>
+
+      {/* RESET TO ZERO (COUNT FROM NOW) - PRESERVES PLAYERS */}
+      <section className="panel space-y-4 border-2 border-red-500/50 bg-gradient-to-br from-red-950/40 via-[#120B16] to-card shadow-[0_0_25px_rgba(239,68,68,0.25)]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full bg-red-500/20 px-3 py-0.5 text-xs font-black uppercase text-red-400 border border-red-500/40">
+              <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-ping" />
+              <span>Ledger & Stats Reset</span>
+            </div>
+            <h2 className="mt-1.5 text-xl sm:text-2xl font-black text-white">Reset Deposits, Withdrawals & Winnings (Count From Now)</h2>
+            <p className="mt-1 text-xs sm:text-sm text-slate-300">
+              Clears previous deposits, withdrawals, rewards, and player wallet balances to <b>zero</b> so all counters start cleanly from now.
+            </p>
+          </div>
+          <div className="shrink-0 rounded-xl bg-emerald-500/10 border border-emerald-500/30 px-3 py-2 text-xs font-bold text-emerald-400">
+            ✓ All Player Accounts Preserved (Zero Logins Deleted)
+          </div>
+        </div>
+
+        <div className="grid gap-2 sm:grid-cols-3 text-xs text-slate-300 pt-1">
+          <div className="rounded-lg bg-black/40 border border-white/5 p-2.5">
+            <span className="text-slate-400 block text-[10px] uppercase font-bold">Total Deposits & Withdrawals</span>
+            <span className="font-mono text-amber-400 font-bold">Resets to ₹0.00</span>
+          </div>
+          <div className="rounded-lg bg-black/40 border border-white/5 p-2.5">
+            <span className="text-slate-400 block text-[10px] uppercase font-bold">Pending Deposits & Withdraws</span>
+            <span className="font-mono text-amber-400 font-bold">Cleared to 0</span>
+          </div>
+          <div className="rounded-lg bg-black/40 border border-white/5 p-2.5">
+            <span className="text-slate-400 block text-[10px] uppercase font-bold">Player Wallets & Points</span>
+            <span className="font-mono text-amber-400 font-bold">Reset to ₹0.00 (Accounts Kept)</span>
+          </div>
+        </div>
+
+        <div className="grid gap-3 pt-2 sm:grid-cols-[1fr_auto]">
+          <input
+            className="input border-red-500/40 focus:border-red-400"
+            placeholder="Type RESET to confirm"
+            value={resetAllConfirm}
+            onChange={(e) => setResetAllConfirm(e.target.value)}
+          />
+          <button
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-red-700 px-6 py-3 text-xs sm:text-sm font-black text-white shadow-[0_0_20px_rgba(239,68,68,0.4)] transition hover:brightness-110 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+            type="button"
+            disabled={!['RESET', 'RESET ZERO'].includes(resetAllConfirm.trim().toUpperCase()) || resettingAll}
+            onClick={resetAllToZero}
+          >
+            {resettingAll ? 'Resetting to Zero...' : 'RESET ALL DATA TO ZERO (COUNT FROM NOW)'}
+          </button>
+        </div>
       </section>
       <section className="grid gap-4 md:grid-cols-2">
         <Link className="panel block hover:border-primary" to="/master/deposits">
@@ -193,35 +245,6 @@ export default function MasterPanel() {
           {pointsSaving ? 'Updating...' : 'Update Points'}
         </button>
       </form>
-      {/* FULL RESET ALL TO ZERO */}
-      <div className="panel space-y-4 border-2 border-red-500/50 bg-gradient-to-br from-red-950/30 via-[#100C14] to-card/90 shadow-[0_0_30px_rgba(239,68,68,0.2)]">
-        <div>
-          <div className="inline-flex items-center gap-2 rounded-full bg-red-500/20 px-3 py-1 text-xs font-black uppercase text-red-400 border border-red-500/40">
-            <span>Critical Master Control</span>
-          </div>
-          <h2 className="mt-2 text-2xl font-black text-white">Reset All Player Data to Zero</h2>
-          <p className="mt-2 text-sm leading-6 text-slate-300">
-            Resets all player data provided from master to player end down to <b>zero</b>:
-            sets all player wallet balances to <b className="text-amber-400 font-mono">₹0.00</b>, winning points to <b className="text-amber-400 font-mono">0</b>, team leaderboard points to <b className="text-amber-400 font-mono">0</b>, and completely clears wallet transactions, match registrations, and deposit/withdrawal queues.
-          </p>
-        </div>
-        <div className="grid gap-3 md:grid-cols-[1fr_auto]">
-          <input
-            className="input border-red-500/40 focus:border-red-400"
-            placeholder="Type RESET ZERO to enable"
-            value={resetAllConfirm}
-            onChange={(e) => setResetAllConfirm(e.target.value)}
-          />
-          <button
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-red-600 to-rose-700 px-6 py-3 text-sm font-black text-white shadow-[0_0_20px_rgba(239,68,68,0.4)] transition hover:brightness-110 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
-            type="button"
-            disabled={resetAllConfirm !== 'RESET ZERO' || resettingAll}
-            onClick={resetAllToZero}
-          >
-            {resettingAll ? 'Resetting All to Zero...' : 'RESET ALL TO ZERO'}
-          </button>
-        </div>
-      </div>
 
       {/* LEADERBOARD POINTS ONLY RESET */}
       <div className="panel space-y-3 border-white/10 bg-card/60">

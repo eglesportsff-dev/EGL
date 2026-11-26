@@ -46,10 +46,11 @@ public class MasterService {
     private final UserNotificationRepository userNotifications;
 
     public MasterService(DepositRequestRepository deposits, WithdrawRequestRepository withdrawals,
-                         MasterControllerProfileRepository masters, ControllerProfileRepository controllers,
-                         ControllerReviewRepository controllerReviews, MatchRepository matches, MatchParticipantRepository participants, UserRepository users,
-                         TeamRepository teams, WalletTransactionRepository transactions,
-                         UserNotificationRepository userNotifications) {
+            MasterControllerProfileRepository masters, ControllerProfileRepository controllers,
+            ControllerReviewRepository controllerReviews, MatchRepository matches,
+            MatchParticipantRepository participants, UserRepository users,
+            TeamRepository teams, WalletTransactionRepository transactions,
+            UserNotificationRepository userNotifications) {
         this.deposits = deposits;
         this.withdrawals = withdrawals;
         this.masters = masters;
@@ -65,7 +66,8 @@ public class MasterService {
 
     @Transactional(readOnly = true)
     public PagedResponse<PendingDepositRow> pendingDeposits(int page, int size) {
-        var result = deposits.findByStatusOrderByCreatedAtAsc(RequestStatus.PENDING, PageRequest.of(Math.max(page, 0), Math.min(size, 20)));
+        var result = deposits.findByStatusOrderByCreatedAtAsc(RequestStatus.PENDING,
+                PageRequest.of(Math.max(page, 0), Math.min(size, 20)));
         return new PagedResponse<>(result.getContent().stream()
                 .map(d -> new PendingDepositRow(d.getId(), d.getUser().getUsername(), d.getUser().getUid(),
                         d.getUser().getEmail(), d.getAmount(), d.getUtrNumber(), d.getCreatedAt()))
@@ -74,7 +76,8 @@ public class MasterService {
 
     @Transactional(readOnly = true)
     public PagedResponse<PendingWithdrawRow> pendingWithdraws(int page, int size) {
-        var result = withdrawals.findByStatusInOrderByCreatedAtAsc(List.of(RequestStatus.PENDING, RequestStatus.FORWARDED),
+        var result = withdrawals.findByStatusInOrderByCreatedAtAsc(
+                List.of(RequestStatus.PENDING, RequestStatus.FORWARDED),
                 PageRequest.of(Math.max(page, 0), Math.min(size, 20)));
         return new PagedResponse<>(result.getContent().stream()
                 .map(w -> new PendingWithdrawRow(w.getId(), w.getUser().getUsername(), w.getUser().getUid(),
@@ -142,7 +145,8 @@ public class MasterService {
         int size = teamSize(match.getVariant());
         BigDecimal rewardTotal = usesWinnerOnlyResult(match)
                 ? match.getFirstReward().multiply(BigDecimal.valueOf(size))
-                : match.getFirstReward().add(match.getSecondReward()).add(match.getThirdReward()).multiply(BigDecimal.valueOf(size));
+                : match.getFirstReward().add(match.getSecondReward()).add(match.getThirdReward())
+                        .multiply(BigDecimal.valueOf(size));
         return new ControllerMatchRecord(match.getId(), match.getTitle(), match.getGameType(), match.getVariant(),
                 match.getMatchTime(), match.getRegisterBefore(), players, entryTotal, rewardTotal,
                 entryTotal.subtract(rewardTotal), match.isActive());
@@ -199,8 +203,7 @@ public class MasterService {
                 participantsCount,
                 txCount,
                 reviewsCount,
-                "All player-end data has been reset to zero! Wallet balances (₹0.00), winning points (0), team points, and all transactions/match history were cleared."
-        );
+                "All player-end data has been reset to zero! Wallet balances (₹0.00), winning points (0), team points, and all transactions/match history were cleared.");
     }
 
     @Transactional
